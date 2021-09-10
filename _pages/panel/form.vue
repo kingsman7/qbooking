@@ -1,0 +1,452 @@
+<template>
+  <div id="panelReservationForm">
+    <div class="q-container">
+      <!--Success content-->
+      <div class="box text-center" v-if="successReserve">
+        <div class="q-py-lg">
+          <q-icon name="fas fa-check-circle" color="green" size="50px" class="q-mb-md"/>
+          <div class="text-grey-8 text-h5 q-mb-md">¡{{ $tr('ui.label.reserved') }}!</div>
+          <q-btn :label="$tr('ui.label.finalize')" color="green" rounded unelevated
+                 :to="{name : 'qbooking.panel.reservations.index'}"/>
+        </div>
+      </div>
+      <!--Form content-->
+      <div class="box relative-position" v-else>
+        <!--Title-->
+        <div class="col-12 text-primary text-weight-bold text-subtitle1">
+          {{ $tr('qbooking.layout.newReservation') }}
+        </div>
+        <q-separator class="q-mt-sm"/>
+        <!--Header Stepper-->
+        <q-tab-panels v-model="step" animated>
+          <q-tab-panel v-for="(stepName , keyName) in steps" :key="keyName" :name="stepName" class="text-center">
+            <!--Title-->
+            <div class="text-weight-bold text-subtitle1 text-grey-8">{{ headerSteps[stepName].title }}</div>
+            <!--Description-->
+            <div class="text-grey-8">{{ headerSteps[stepName].description }}</div>
+          </q-tab-panel>
+        </q-tab-panels>
+        <!--controller tabs-->
+        <div class="text-center q-mb-md">
+          <q-option-group v-model="step" inline dense size="30px" :options="optionsRadioTabs" disable/>
+        </div>
+        <!--Stepper content-->
+        <q-tab-panels v-model="step" animated ref="stepsForm">
+          <!--Step Category-->
+          <q-tab-panel name="category">
+            <q-scroll-area style="height: 350px; width: 100%;">
+              <div class="row q-col-gutter-sm">
+                <div v-for="(category, keyCategory) in categories" :key="keyCategory" class="col-12"
+                     @click="selectItem('categoryId',category.id)">
+                  <div :class="`item-selectable ${classSelected('categoryId',category.id)}`">
+                    <!--Icon-->
+                    <q-icon name="fas fa-layer-group"/>
+                    <!--Title-->
+                    <label>{{ category.title }}</label>
+                  </div>
+                </div>
+              </div>
+            </q-scroll-area>
+          </q-tab-panel>
+          <!--Step Service-->
+          <q-tab-panel name="service">
+            <q-scroll-area style="height: 350px; width: 100%;">
+              <div class="row q-col-gutter-sm">
+                <div v-for="(service, keyService) in services" :key="keyService" class="col-12"
+                     @click="selectItem('serviceId',service.id)">
+                  <div :class="`item-selectable row items-center ${classSelected('serviceId',service.id)}`">
+                    <!--Icon-->
+                    <q-icon name="fas fa-concierge-bell"/>
+                    <!--Description-->
+                    <div class="text-left">
+                      <div>{{ service.title }}</div>
+                      <label class="text-grey-6 text-caption"> {{ selected.category.title }} </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </q-scroll-area>
+          </q-tab-panel>
+          <!--Step Resource-->
+          <q-tab-panel name="resource">
+            <q-scroll-area style="height: 350px; width: 100%;">
+              <div class="row q-col-gutter-sm">
+                <div v-for="(resource, keyResource) in resources" :key="keyResource" class="col-12"
+                     @click="selectItem('resourceId', resource.id)">
+                  <div :class="`item-selectable row items-center ${classSelected('resourceId', resource.id)}`">
+                    <!--icon-->
+                    <q-icon name="fas fa-chess-knight"/>
+                    <!--Description-->
+                    <div class="text-left">
+                      <div>{{ resource.title }}</div>
+                      <label class="text-grey-6 text-caption">
+                        {{ selected.category.title }}, {{ selected.service.title }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </q-scroll-area>
+          </q-tab-panel>
+          <!--Step Date-->
+          <q-tab-panel name="date">
+            <div class="row q-col-gutter-md">
+              <dynamic-field v-for="(field, keyField) in formFields" :key="keyField" :field="field"
+                             v-model="filters[keyField]" class="col-12"/>
+            </div>
+          </q-tab-panel>
+          <!--availability-->
+          <q-tab-panel name="availability">
+            <q-scroll-area style="height: 370px; width: 100%;">
+              <div class="row q-col-gutter-sm">
+                <div v-for="(availability, keyService) in availabilities" :key="keyService" class="col-12"
+                     @click="selectItem('availabilityId',availability.id)" v-if="!availability.isBusy">
+                  <div :class="`item-selectable row items-center ${classSelected('availabilityId',availability.id)}`">
+                    <!--Icon-->
+                    <q-icon name="fas fa-chess-knight"/>
+                    <!--Description-->
+                    <div class="text-left">
+                      <!--Category and services selected-->
+                      <div class="text-grey-6 text-caption">
+                        {{ selected.category.title }}, {{ selected.service.title }}
+                      </div>
+                      <!--Resource-->
+                      <div class="q-mb-xs">{{ availability.resource.title }}</div>
+                      <!--Shifts date-->
+                      <div class="text-blue">
+                        {{ $trd(`${availability.calendarDate} ${availability.startTime}`, {type: 'shortHuman'}) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </q-scroll-area>
+          </q-tab-panel>
+        </q-tab-panels>
+        <q-separator class="q-mb-md q-mt-sm"/>
+        <!--Actions-->
+        <div id="actionsContent" class="row">
+          <!--Previous-->
+          <div class="col-4">
+            <q-btn unelevated rounded v-bind="stepActions.previous.props" @click="stepActions.previous.action()"/>
+          </div>
+          <!--Next Action-->
+          <div class="col-8 text-right">
+            <!--Skip-->
+            <q-btn unelevated rounded v-bind="stepActions.skip.props" class="q-mr-sm"
+                   @click="stepActions.skip.action()" v-if="stepActions.skip.vIf"/>
+            <!--Next-->
+            <q-btn unelevated rounded @click="stepActions.next.action()" v-bind="stepActions.next.props"/>
+          </div>
+        </div>
+        <!--inner loading-->
+        <inner-loading :visible="loading"/>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  props: {},
+  components: {},
+  watch: {},
+  mounted() {
+    this.$nextTick(function () {
+      this.init()
+    })
+  },
+  data() {
+    return {
+      loading: false,
+      successReserve: false,
+      steps: ['category', 'service', 'resource', 'date', 'availability'],
+      step: 'category',
+      filters: {
+        categoryId: null,
+        serviceId: null,
+        resourceId: null,
+        date: null,
+        time: null,
+        availabilityId: null
+      },
+      categories: [],
+      services: [],
+      resources: [],
+      availabilities: [],
+    }
+  },
+  computed: {
+    //Headers steppers
+    headerSteps() {
+      return {
+        category: {
+          title: this.$tr('qbooking.layout.titleStepCategory'),
+          description: this.$tr('qbooking.layout.descriptionStepCategory')
+        },
+        service: {
+          title: this.$tr('qbooking.layout.titleStepService'),
+          description: this.$tr('qbooking.layout.descriptionStepService')
+        },
+        resource: {
+          title: this.$tr('qbooking.layout.titleStepResource'),
+          description: this.$tr('qbooking.layout.descriptionStepResource')
+        },
+        date: {
+          title: this.$tr('qbooking.layout.titleStepDate'),
+          description: this.$tr('qbooking.layout.descriptionStepDate')
+        },
+        availability: {
+          title: this.$tr('qbooking.layout.titleStepAvailability'),
+          description: this.$tr('qbooking.layout.descriptionStepAvailability')
+        }
+      }
+    },
+    //Return options radio to progress
+    optionsRadioTabs() {
+      return this.steps.map(item => {
+        return {label: '', value: item}
+      })
+    },
+    //Step Actions
+    stepActions() {
+      return {
+        previous: {
+          props: {
+            label: this.$tr('ui.label.back'),
+            color: "grey-7",
+            outline: true
+          },
+          action: () => this.$refs.stepsForm.previous()
+        },
+        skip: {
+          props: {
+            label: this.$tr('ui.label.skip'),
+            color: "grey-7",
+            outline: true
+          },
+          vIf: ['resource', 'date'].includes(this.step),
+          action: () => this.$refs.stepsForm.next()
+        },
+        next: {
+          props: {
+            label: this.$tr('ui.label.next'),
+            color: "green",
+            disable: ['category', 'service', 'availability'].includes(this.step) ?
+                (this.filters[`${this.step}Id`] ? false : true) : false
+          },
+          action: () => {
+            //Actions to next step
+            let actions = {
+              category: () => this.getServices(true),
+              service: () => this.getResources(true),
+              date: () => this.getAvailabilities(true),
+              availability: () => this.createReservation()
+            }
+
+            //Call action
+            if (actions[this.step]) actions[this.step]()
+
+            //go to next step
+            if (actions[this.step] != 'availability') this.$refs.stepsForm.next()
+          }
+        }
+      }
+    },
+    //Selected items
+    selected() {
+      let category = this.categories.find(item => item.id == this.filters.categoryId)
+      let service = this.services.find(item => item.id == this.filters.serviceId)
+      let availability = this.availabilities.find(item => item.id == this.filters.availabilityId)
+
+      return {
+        category: category ? category : {},
+        service: service ? service : {},
+        availability: availability ? availability : {},
+      }
+    },
+    //FormField
+    formFields() {
+      return {
+        date: {
+          type: 'date',
+          props: {
+            label: this.$tr('qbooking.layout.chooseDateReservation'),
+            options: (date) => {
+              //Limit to date from today
+              return date >= this.$moment().format('YYYY/MM/DD')
+            },
+          }
+        },
+        time: {
+          type: 'hour',
+          props: {
+            label: this.$tr('qbooking.layout.chooseTimeReservation'),
+            options: (hr) => {
+              //If the date if today, allow only future time
+              if (this.filters.date == this.$moment().format('YYYY/MM/DD'))
+                if (hr <= parseInt(this.$moment().format('HH'))) return false
+
+              return true
+            },
+          }
+        }
+      }
+    }
+  },
+  methods: {
+    init() {
+      this.getCategories(true)
+    },
+    //Get booking categories
+    getCategories(refresh = false) {
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        this.categories = []
+        //Request params
+        let requestParams = {
+          refresh: refresh,
+          params: {}
+        }
+        //Request
+        this.$crud.index('apiRoutes.qbooking.categories', requestParams).then(response => {
+          this.categories = response.data
+          this.loading = false
+          resolve(response.data)
+        }).catch(error => {
+          reject(error)
+          this.loading = false
+        })
+      })
+    },
+    //Get booking categories
+    getServices(refresh = false) {
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        this.services = []
+        //Request params
+        let requestParams = {
+          refresh: refresh,
+          params: {filter: {categoryId: this.filters.categoryId}}
+        }
+        //Request
+        this.$crud.index('apiRoutes.qbooking.services', requestParams).then(response => {
+          this.services = response.data
+          resolve(response.data)
+          this.loading = false
+        }).catch(error => {
+          reject(error)
+          this.loading = false
+        })
+      })
+    },
+    //Get booking categories
+    getResources(refresh = false) {
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        this.resources = []
+        //Request params
+        let requestParams = {
+          refresh: refresh,
+          params: {filter: {services: [this.filters.serviceId]}}
+        }
+        //Request
+        this.$crud.index('apiRoutes.qbooking.resources', requestParams).then(response => {
+          this.resources = response.data
+          resolve(response.data)
+          this.loading = false
+        }).catch(error => {
+          reject(error)
+          this.loading = false
+        })
+      })
+    },
+    //Get Availabilities
+    getAvailabilities(refresh = false) {
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        this.availabilities = []
+        //Request params
+        let requestParams = {
+          refresh: refresh,
+          params: {filter: this.filters}
+        }
+        //Request
+        this.$crud.index('apiRoutes.qbooking.availabilities', requestParams).then(response => {
+          this.availabilities = response.data.map(item => {
+            return {...item, id: this.$uid()}
+          })
+          resolve(response.data)
+          this.loading = false
+        }).catch(error => {
+          reject(error)
+          this.loading = false
+        })
+      })
+    },
+    //Select Item
+    selectItem(filterName, itemId) {
+      this.filters[filterName] = (this.filters[filterName] == itemId) ? null : itemId
+    },
+    //Return class to selected items
+    classSelected(filterName, itemId) {
+      if (this.filters[filterName] == itemId) return 'selected'
+      return ''
+    },
+    //Create reservation
+    createReservation() {
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        //Request data
+        let requestData = {
+          customerId: this.$store.state.quserAuth.userId,
+          items: [{
+            categoryId: this.selected.category.id,
+            categoryTitle: this.selected.category.title,
+            serviceId: this.selected.service.id,
+            serviceTitle: this.selected.service.title,
+            price: this.selected.service.price,
+            resourceId: this.selected.availability.resource.id,
+            resourceTitle: this.selected.availability.resource.title,
+            startDate: `${this.selected.availability.calendarDate} ${this.selected.availability.startTime}`,
+            endDate: `${this.selected.availability.calendarDate} ${this.selected.availability.endTime}`,
+          }]
+        }
+        //Request
+        this.$crud.create('apiRoutes.qbooking.reservations', requestData).then(response => {
+          this.successReserve = true
+          window.open(this.$store.state.qsiteApp.baseUrl + '/tienda/checkout')
+          this.loading = false
+        }).catch(error => {
+          this.loading = false
+        })
+      })
+    }
+  }
+}
+</script>
+<style lang="stylus">
+#panelReservationForm
+  .item-selectable
+    cursor pointer
+    padding 15px
+    border 2px solid $grey-4
+    border-radius $custom-radius
+    color $grey-9
+    line-height 1.2
+
+    &.selected
+      border 2px solid $primary
+
+    .q-icon
+      background-color $grey-4
+      border-radius 50%
+      color white
+      height 40px
+      width 40px
+      font-size 18px
+      margin-right 15px
+
+    label
+      color $grey-9
+      cursor pointer
+</style>

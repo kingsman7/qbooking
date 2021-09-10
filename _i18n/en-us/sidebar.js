@@ -3,5 +3,9 @@ export default {
   adminCategories: 'Categories',
   adminServices: 'Services',
   adminResources: 'Resources',
-  adminReservations: 'Reservations'
+  adminReservations: 'Reservations',
+
+  panelReservations: 'My Reservations',
+  panelNewReservation: 'New Reservation',
+  panelUpdateReservation: 'Update Reservation'
 }

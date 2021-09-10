@@ -9,5 +9,7 @@ export default {
   categories: `${urlBase}/categories`,
   services: `${urlBase}/services`,
   resources: `${urlBase}/resources`,
-  reservations: `${urlBase}/reservations`
+  reservations: `${urlBase}/reservations`,
+  reservationItems: `${urlBase}/reservation-items`,
+  availabilities: `${urlBase}/availabilities`,
 }
