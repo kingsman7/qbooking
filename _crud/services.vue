@@ -125,6 +125,20 @@ export default {
               type: 'number'
             },
           },
+          shiftTime: {
+            value: 30,
+            type: 'select',
+            props: {
+              label: this.$tr('qsite.layout.shiftTime'),
+              useInput: false,
+              options: this.$helper.getShiftTimeOptions({
+                hour: this.$tr('ui.label.hour'),
+                hours: this.$trp('ui.label.hour'),
+                minutes: this.$trp('ui.label.minute'),
+                hours: this.$tr('ui.label.and'),
+              })
+            }
+          },
           categoryId: {
             value: null,
             type: 'crud',
@@ -161,12 +175,6 @@ export default {
               zone: 'mainimage',
               entity: "Modules\\Iblog\\Entities\\Category",
               entityId: null
-            }
-          },
-          schedule: {
-            type: 'schedulable',
-            props : {
-              withShiftTime : true
             }
           }
         },

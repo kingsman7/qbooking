@@ -111,6 +111,10 @@ export default {
               },
             },
           },
+          schedule: {
+            type: 'schedulable',
+            props: {}
+          }
         },
       }
     },
