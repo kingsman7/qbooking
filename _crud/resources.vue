@@ -42,7 +42,7 @@ export default {
         },
         update: {
           title: this.$tr('qbooking.layout.updateResource'),
-          requestParams: {include: 'services'}
+          requestParams: {include: 'services,schedule.workTimes'}
         },
         delete: true,
         formLeft: {
