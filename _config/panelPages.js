@@ -1,29 +1,15 @@
 export default {
-  reservations: {
-    permission: 'ibooking.reservations.manage',
+  //Resource User
+  userResource: {
+    permission: 'ibooking.resources.manage',
     activated: true,
     authenticated: true,
-    path: '/booking/reservations/index',
-    name: 'qbooking.panel.reservations.index',
-    crud: import('@imagina/qbooking/_crud/reservations'),
-    page: () => import('@imagina/qcrud/_pages/admin/crudPage'),
+    path: '/booking/resource/user',
+    name: 'qbooking.panel.resource.user',
+    page: () => import('@imagina/qbooking/_pages/panel/userResource'),
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
-    title: 'qbooking.sidebar.panelReservations',
-    icon: 'fas fa-tasks',
-    subHeader: {
-      refresh: true,
-    }
-  },
-  newReservation: {
-    permission: 'ibooking.reservations.create',
-    activated: true,
-    authenticated: true,
-    path: '/booking/reservations/create',
-    name: 'qbooking.panel.reservations.create',
-    page: () => import('@imagina/qbooking/_pages/panel/form'),
-    layout: () => import('@imagina/qsite/_layouts/master.vue'),
-    title: 'qbooking.sidebar.panelNewReservation',
-    icon: 'fas fa-tasks',
+    title: 'qbooking.sidebar.panelUserResource',
+    icon: 'fas fa-chess-knight',
     subHeader: {
       refresh: true,
     }

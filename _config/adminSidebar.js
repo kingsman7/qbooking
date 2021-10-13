@@ -6,8 +6,8 @@ export default [
     title: 'qbooking.sidebar.adminGroup',
     icon: 'fas fa-vote-yea',
     children: [
-      pages.qbooking.categories,
-      pages.qbooking.services,
+      pages.mainqbooking.categories,
+      pages.mainqbooking.services,
       pages.qbooking.resources
     ]
   },
