@@ -8,6 +8,9 @@ export default {
   },
   computed: {
     crudData() {
+      //Default filters
+      let defaultFilters = (config('app.mode') == 'ipanel') ? {createdBy: this.$store.state.quserAuth.userId} : {}
+      //Crud data
       return {
         crudId: this.crudId,
         entityName: config("main.qbooking.entityNames.category"),
@@ -36,11 +39,11 @@ export default {
             },
             {name: 'actions', label: this.$tr('ui.form.actions'), align: 'left'},
           ],
-          requestParams: {include: 'parent'}
+          requestParams: {include: 'parent', filter: {...defaultFilters}}
         },
         update: {
           title: this.$tr('qbooking.layout.updateCategory'),
-          requestParams: {include: 'parent'}
+          requestParams: {include: 'parent', filter: {...defaultFilters}}
         },
         delete: true,
         formLeft: {

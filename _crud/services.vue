@@ -8,6 +8,9 @@ export default {
   },
   computed: {
     crudData() {
+      //Default filters
+      let defaultFilters = (config('app.mode') == 'ipanel') ? {createdBy: this.$store.state.quserAuth.userId} : {}
+      //Crud data
       return {
         crudId: this.crudId,
         entityName: config("main.qbooking.entityNames.services"),
@@ -21,7 +24,6 @@ export default {
           columns: [
             {name: 'id', label: this.$tr('ui.form.id'), field: 'id', style: 'width: 50px'},
             {name: 'title', label: this.$tr('ui.form.title'), field: 'title', align: 'rigth'},
-            {name: 'slug', label: this.$tr('ui.form.slug'), field: 'slug', align: 'left'},
             {
               name: 'category', label: this.$tr('ui.form.category'),
               align: 'left', field: 'category', sortable: true,
@@ -29,8 +31,12 @@ export default {
             },
             {name: 'status', label: this.$tr('ui.form.status'), field: 'status', align: 'left'},
             {
+              name: 'shiftTime', label: this.$tr('qsite.layout.shiftTime'), field: 'shiftTime', align: 'left',
+              format: val => val ? `${val} ${this.$trp('ui.label.minute')}` : '-'
+            },
+            {
               name: 'price', label: this.$tr('ui.form.price'), field: 'price', align: 'left',
-              format: val => val ? this.$trn(val) : 0
+              format: val => val ? `$${this.$trn(val)}` : 0
             },
             {
               name: 'withMeeting', label: this.$tr('ui.label.meeting'), field: 'withMeeting', align: 'left',
@@ -46,11 +52,11 @@ export default {
             },
             {name: 'actions', label: this.$tr('ui.form.actions'), align: 'left'},
           ],
-          requestParams: {include: 'category'}
+          requestParams: {include: 'category', filter: {...defaultFilters}}
         },
         update: {
           title: this.$tr('qbooking.layout.updateService'),
-          requestParams: {include: 'categories'}
+          requestParams: {include: 'categories', filter: {...defaultFilters}}
         },
         delete: true,
         formLeft: {
@@ -135,7 +141,7 @@ export default {
                 hour: this.$tr('ui.label.hour'),
                 hours: this.$trp('ui.label.hour'),
                 minutes: this.$trp('ui.label.minute'),
-                hours: this.$tr('ui.label.and'),
+                and: this.$tr('ui.label.and'),
               })
             }
           },
