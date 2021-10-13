@@ -20,5 +20,7 @@ export default {
   descriptionStepAvailability: 'Select the reservation of your preference',
 
   chooseDateReservation: 'Choose the day for your reservation',
-  chooseTimeReservation: 'Choose the time for your reservation'
+  chooseTimeReservation: 'Choose the time for your reservation',
+
+  myResource: 'My Resource'
 }

@@ -20,7 +20,7 @@ export default {
   descriptionStepAvailability: 'Selecciona la reserva de tu preferencía',
 
   chooseDateReservation: 'Elige el día para tu reserva',
-  chooseTimeReservation: 'Elige la hora para tu reserva'
+  chooseTimeReservation: 'Elige la hora para tu reserva',
 
-  
+  myResource : 'Mi Recurso'
 }
