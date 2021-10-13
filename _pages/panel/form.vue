@@ -14,7 +14,7 @@
       <div class="box relative-position" v-else>
         <!--Title-->
         <div class="col-12 text-primary text-weight-bold text-subtitle1">
-          {{ $tr('qbooking.layout.newReservation') }}
+          <label v-if="resourceData">{{ resourceData.title }} - </label> {{ $tr('qbooking.layout.newReservation') }}
         </div>
         <q-separator class="q-mt-sm"/>
         <!--Header Stepper-->
@@ -68,7 +68,7 @@
             </q-scroll-area>
           </q-tab-panel>
           <!--Step Resource-->
-          <q-tab-panel name="resource">
+          <q-tab-panel name="resource" v-if="!filterByResource">
             <q-scroll-area style="height: 350px; width: 100%;">
               <div class="row q-col-gutter-sm">
                 <div v-for="(resource, keyResource) in resources" :key="keyResource" class="col-12"
@@ -159,7 +159,6 @@ export default {
     return {
       loading: false,
       successReserve: false,
-      steps: ['category', 'service', 'resource', 'date', 'availability'],
       step: 'category',
       filters: {
         categoryId: null,
@@ -169,6 +168,8 @@ export default {
         time: null,
         availabilityId: null
       },
+      filterByResource: this.$route.query.resource,
+      resourceData: false,
       categories: [],
       services: [],
       resources: [],
@@ -176,6 +177,11 @@ export default {
     }
   },
   computed: {
+    //steps
+    steps() {
+      return this.filterByResource ? ['category', 'service', 'date', 'availability'] :
+          ['category', 'service', 'resource', 'date', 'availability']
+    },
     //Headers steppers
     headerSteps() {
       return {
@@ -237,8 +243,8 @@ export default {
           action: () => {
             //Actions to next step
             let actions = {
-              category: () => this.getServices(true),
-              service: () => this.getResources(true),
+              category: this.filterByResource ? false : () => this.getServices(true),
+              service: () => this.filterByResource ? false : this.getResources(true),
               date: () => this.getAvailabilities(true),
               availability: () => this.createReservation()
             }
@@ -295,7 +301,39 @@ export default {
   },
   methods: {
     init() {
-      this.getCategories(true)
+      this.getData(true)
+    },
+    //get data
+    getData(refresh = false) {
+      if (this.filterByResource) this.getResourceData(true)
+      else this.getCategories(true)
+    },
+    //Get resource data
+    getResourceData(refresh = false) {
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        this.resourceData = false
+        //Request params
+        let requestParams = {
+          refresh: refresh,
+          params: {include: 'services.category'}
+        }
+        //Request
+        this.$crud.show('apiRoutes.qbooking.resources', this.filterByResource, requestParams).then(response => {
+          this.resourceData = response.data
+          //Set resource selected
+          this.selectItem('resourceId', this.filterByResource)
+          //Set categories
+          this.categories = Object.values(this.resourceData.services).map(item => item.category)
+          //Set services
+          this.services = this.resourceData.services
+          resolve(response.data)
+          this.loading = false
+        }).catch(error => {
+          reject(error)
+          this.loading = false
+        })
+      })
     },
     //Get booking categories
     getCategories(refresh = false) {
@@ -323,11 +361,13 @@ export default {
       return new Promise((resolve, reject) => {
         this.loading = true
         this.services = []
+
         //Request params
         let requestParams = {
           refresh: refresh,
           params: {filter: {categoryId: this.filters.categoryId}}
         }
+
         //Request
         this.$crud.index('apiRoutes.qbooking.services', requestParams).then(response => {
           this.services = response.data
