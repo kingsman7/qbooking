@@ -13,10 +13,20 @@
       <!--Form content-->
       <div class="box relative-position" v-else>
         <!--Title-->
-        <div class="col-12 text-primary text-weight-bold text-subtitle1">
-          <label v-if="resourceData">{{ resourceData.title }} - </label> {{ $tr('qbooking.layout.newReservation') }}
+        <div class="col-12 text-primary text-weight-bold text-subtitle1 text-center q-mb-md">
+          {{ $tr('qbooking.layout.newReservation') }}
         </div>
-        <q-separator class="q-mt-sm"/>
+        <!--Resource data-->
+        <q-banner v-if="resourceData" id="bannerResourceData" class="bg-primary text-white">
+          <template v-slot:avatar>
+            <div class="resource-image img-as-bg"
+                 :style="`background-image : url('${resourceData.mediaFiles.mainimage.path}')`"></div>
+          </template>
+          <div class="ellipsis text-weight-bold">{{ resourceData.title }}</div>
+          <div class="ellipsis-2-lines text-caption">{{ resourceData.description }}</div>
+        </q-banner>
+        <!--Separator-->
+        <q-separator v-else class="q-mb-sm"/>
         <!--Header Stepper-->
         <q-tab-panels v-model="step" animated>
           <q-tab-panel v-for="(stepName , keyName) in steps" :key="keyName" :name="stepName" class="text-center">
@@ -327,6 +337,17 @@ export default {
           this.categories = Object.values(this.resourceData.services).map(item => item.category)
           //Set services
           this.services = this.resourceData.services
+
+          //Set service
+          if (this.$route.query.service) {
+            let service = this.services.find(item => item.id == this.$route.query.service)
+            if (service) {
+              this.selectItem('serviceId', service.id)
+              this.selectItem('categoryId', service.categoryId)
+              this.step = 'date'
+            }
+          }
+
           resolve(response.data)
           this.loading = false
         }).catch(error => {
@@ -466,6 +487,15 @@ export default {
 </script>
 <style lang="stylus">
 #panelReservationForm
+  #bannerResourceData
+    padding 15px
+    border-radius 10px
+
+    .resource-image
+      height 90px
+      width 90px
+      border-radius 10px
+
   .item-selectable
     cursor pointer
     padding 15px
