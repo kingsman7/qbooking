@@ -40,7 +40,7 @@ export default {
             },
             {name: 'actions', label: this.$tr('ui.form.actions'), align: 'left'},
           ],
-          requestParams: {include: 'reservation'},
+          requestParams: {include: 'reservation,meetings'},
           grid: {
             component: () => import('@imagina/qbooking/_components/crud/reservationCard'),
           }

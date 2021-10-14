@@ -111,6 +111,17 @@ export default {
               },
             },
           },
+          mediasSingle: {
+            name: 'mediasSingle',
+            value: {},
+            type: 'media',
+            props: {
+              label: this.$tr('ui.form.firstImage'),
+              zone: 'mainimage',
+              entity: "Modules\\Ibooking\\Entities\\Resource",
+              entityId: null
+            }
+          },
           schedule: {
             type: 'schedulable',
             props: {}

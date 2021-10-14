@@ -89,6 +89,17 @@ export default {
           blocks: [
             {
               fields: {
+                mediasSingle: {
+                  name: 'mediasSingle',
+                  value: {},
+                  type: 'media',
+                  props: {
+                    label: this.$tr('ui.form.firstImage'),
+                    zone: 'mainimage',
+                    entity: "Modules\\Ibooking\\Entities\\Resource",
+                    entityId: null
+                  }
+                },
                 title: {
                   value: this.userData.fullName,
                   type: 'input',
@@ -135,18 +146,6 @@ export default {
                     requestParams: !this.$auth.hasAccess('ibooking.services.manage') ? {} : {
                       filter: {createdBy: this.$store.state.quserAuth.userId}
                     }
-                  }
-                },
-                email: {
-                  value: null,
-                  type: 'input',
-                  fakeFieldName: 'options',
-                  props: {
-                    label: `${this.$tr('ui.form.email')}*`,
-                    rules: [
-                      val => !!val || this.$tr('ui.message.fieldRequired'),
-                      val => this.$helper.validateEmail(val) || this.$tr('ui.message.fieldEmail')
-                    ],
                   }
                 },
                 description: {
