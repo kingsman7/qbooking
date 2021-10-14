@@ -57,10 +57,7 @@ export default {
           },
           action: () => {
             let baseUrl = this.$store.state.qsiteApp.baseUrl
-            let path = this.$router.resolve({
-              name: 'qbooking.panel.reservations.create',
-              query: {resource: this.userResource.id}
-            }).href
+            let path = `ibooking/recursos/${this.userResource.id}`
             //copy to clipboard
             this.$helper.copyToClipboard(`${baseUrl}/${path}`)
           }
@@ -140,15 +137,29 @@ export default {
                     }
                   }
                 },
+                email: {
+                  value: null,
+                  type: 'input',
+                  fakeFieldName: 'options',
+                  props: {
+                    label: `${this.$tr('ui.form.email')}*`,
+                    rules: [
+                      val => !!val || this.$tr('ui.message.fieldRequired'),
+                      val => this.$helper.validateEmail(val) || this.$tr('ui.message.fieldEmail')
+                    ],
+                  }
+                },
                 description: {
                   value: `${this.userData.fullName}...`,
-                  type: 'html',
+                  type: 'input',
                   isTranslatable: true,
                   props: {
                     label: `${this.$tr('ui.form.description')}*`,
                     rules: [
                       val => !!val || this.$tr('ui.message.fieldRequired')
                     ],
+                    type: 'textarea',
+                    rows: "3"
                   }
                 }
               }
