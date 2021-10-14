@@ -93,11 +93,12 @@ export default {
                   name: 'mediasSingle',
                   value: {},
                   type: 'media',
+                  fieldItemId: this.userResource.id || null,
                   props: {
                     label: this.$tr('ui.form.firstImage'),
                     zone: 'mainimage',
                     entity: "Modules\\Ibooking\\Entities\\Resource",
-                    entityId: null
+                    entityId: this.userResource.id || null
                   }
                 },
                 title: {
