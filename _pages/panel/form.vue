@@ -333,8 +333,9 @@ export default {
           this.resourceData = response.data
           //Set resource selected
           this.selectItem('resourceId', this.filterByResource)
-          //Set categories
+          //Set unique categories
           this.categories = Object.values(this.resourceData.services).map(item => item.category)
+          this.categories = [...new Map(this.categories.map(item => [item['id'], item])).values()]
           //Set services
           this.services = this.resourceData.services
 

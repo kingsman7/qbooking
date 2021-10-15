@@ -282,6 +282,7 @@ export default {
         //instance formData
         let formData = {
           ...this.form.schedule, ...this.form.description,
+          options : {email : this.form.meet.options.email},
           meetingConfig: {
             providerName: 'zoom',
             email: this.form.meet.options.email
@@ -302,8 +303,8 @@ export default {
         //cretae resource
         if (!this.userResource) {
           this.$crud.create('apiRoutes.qbooking.resources', formData).then(response => {
-            this.loading = false
             this.$alert.info({message: this.$tr('ui.message.recordUpdated')})
+            this.getUserResource()
           }).catch(error => {
             console.error('create', error)
             this.loading = false
