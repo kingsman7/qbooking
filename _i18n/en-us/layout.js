@@ -22,5 +22,12 @@ export default {
   chooseDateReservation: 'Choose the day for your reservation',
   chooseTimeReservation: 'Choose the time for your reservation',
 
-  myResource: 'My Resource'
+  myResource: 'My Resource',
+  message: {
+    meet: {
+      notFound: 'Enter your Zoom account (email) to link and create meetings ...',
+      pending: 'Almost there! Check your email and accept the link for your Zoom account ...',
+      success: 'Everything is ready! We take care of creating Zoom meetings for you ...',
+    }
+  }
 }

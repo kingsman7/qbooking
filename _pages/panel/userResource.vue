@@ -13,9 +13,23 @@
           <div class="col-12">
             <dynamic-form v-model="form.schedule" v-bind="formProps.schedule" class="box"/>
           </div>
+          <!--Meet-->
+          <div class="col-12">
+            <div class="box box-auto-height">
+              <dynamic-form v-model="form.meet" v-bind="formProps.meet"/>
+              <!--Help Caption-->
+              <q-banner v-if="meetBannerHelp" rounded dense :class="meetBannerHelp.class">
+                <template v-slot:avatar>
+                  <q-icon :name="meetBannerHelp.icon" color="white"/>
+                </template>
+                <div class="text-white">{{ meetBannerHelp.message }}</div>
+              </q-banner>
+            </div>
+          </div>
           <!--Description user Resource-->
           <div class="col-12">
-            <dynamic-form v-model="form.description" v-bind="formProps.description" class="box" @submit="saveResource"/>
+            <dynamic-form v-if="!loading" v-model="form.description" v-bind="formProps.description"
+                          class="box" @submit="saveResource"/>
           </div>
         </div>
         <!--Inner loading-->
@@ -38,7 +52,7 @@ export default {
     return {
       loading: false,
       userResource: false,
-      form: {description: {}, schedule: {}}
+      form: {description: {}, meet: {}, schedule: {}}
     }
   },
   computed: {
@@ -78,6 +92,38 @@ export default {
                   value: null,
                   type: 'schedulable',
                   props: {},
+                },
+              }
+            }
+          ]
+        },
+        meet: {
+          title: this.$trp('ui.label.meet'),
+          defaultColClass: 'col-12',
+          noActions: true,
+          blocks: [
+            {
+              fields: {
+                email: {
+                  value: null,
+                  type: 'input',
+                  fakeFieldName: 'options',
+                  props: {
+                    label: `Zoom | ${this.$tr('ui.form.email')}`,
+                    rules: [
+                      //val => !!val || this.$tr('ui.message.fieldRequired')
+                      val => this.$helper.validateEmail(val) || this.$tr('ui.message.fieldEmail')
+                    ],
+                  }
+                },
+                providerStatusName: {
+                  value: null,
+                  type: 'input',
+                  fakeFieldName: 'meetingConfig',
+                  props: {
+                    label: `Zoom | ${this.$tr('ui.form.status')}`,
+                    readonly: true
+                  }
                 },
               }
             }
@@ -167,6 +213,36 @@ export default {
           ]
         }
       }
+    },
+    //help banner to meet
+    meetBannerHelp() {
+      //Validate
+      if (!this.userResource || !this.userResource.meetingConfig) return false
+
+      //instance banner config
+      let configs = {
+        //No added to zoom
+        0: {
+          class: 'bg-amber',
+          icon: 'fas fa-exclamation-triangle',
+          message: this.$tr('qbooking.layout.message.meet.notFound')
+        },
+        //Pending to verified
+        1: {
+          class: 'bg-info',
+          icon: 'fas fa-info-circle',
+          message: this.$tr('qbooking.layout.message.meet.pending')
+        },
+        //Added
+        2: {
+          class: 'bg-green',
+          icon: 'fas fa-check-circle',
+          message: this.$tr('qbooking.layout.message.meet.success')
+        }
+      }
+
+      //Response
+      return configs[this.userResource.meetingConfig.providerStatus]
     }
   },
   methods: {
@@ -183,7 +259,7 @@ export default {
           refresh: true,
           params: {
             include: 'services,schedule.workTimes',
-            filter: {field: 'created_by', allTranslations: true}
+            filter: {field: 'created_by', allTranslations: true, withMeetingConfig: 'zoom'}
           }
         }
 
@@ -192,6 +268,7 @@ export default {
           this.userResource = response.data
           this.form.description = this.$clone(response.data)
           this.form.schedule = this.$clone(response.data)
+          this.form.meet = this.$clone(response.data)
           this.loading = false
         }).catch(error => {
           this.loading = false
@@ -202,12 +279,20 @@ export default {
     saveResource() {
       return new Promise((resolve, reject) => {
         this.loading = true
-        let formData = {...this.form.schedule, ...this.form.description}
+        //instance formData
+        let formData = {
+          ...this.form.schedule, ...this.form.description,
+          meetingConfig: {
+            providerName: 'zoom',
+            email: this.form.meet.options.email
+          }
+        }
+
         //Update resource
         if (this.userResource) {
           this.$crud.update('apiRoutes.qbooking.resources', this.userResource.id, formData).then(response => {
-            this.loading = false
             this.$alert.info(this.$tr('ui.message.recordUpdated'))
+            this.getUserResource()
           }).catch(error => {
             console.error('update', error)
             this.loading = false
