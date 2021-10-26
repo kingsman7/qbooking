@@ -11,25 +11,23 @@
         <div class="row q-col-gutter-md">
           <!--Schedule user Resource-->
           <div class="col-12">
-            <dynamic-form v-model="form.schedule" v-bind="formProps.schedule" class="box"/>
+            <dynamic-form v-model="form.schedule" v-bind="formProps.schedule"/>
           </div>
           <!--Meet-->
           <div class="col-12">
-            <div class="box box-auto-height">
-              <dynamic-form v-model="form.meet" v-bind="formProps.meet"/>
-              <!--Help Caption-->
-              <q-banner v-if="meetBannerHelp" rounded dense :class="meetBannerHelp.class">
-                <template v-slot:avatar>
-                  <q-icon :name="meetBannerHelp.icon" color="white"/>
-                </template>
-                <div class="text-white">{{ meetBannerHelp.message }}</div>
-              </q-banner>
-            </div>
+            <dynamic-form v-model="form.meet" v-bind="formProps.meet"/>
+            <!--Help Caption-->
+            <q-banner v-if="meetBannerHelp" rounded dense :class="meetBannerHelp.class">
+              <template v-slot:avatar>
+                <q-icon :name="meetBannerHelp.icon" color="white"/>
+              </template>
+              <div class="text-white">{{ meetBannerHelp.message }}</div>
+            </q-banner>
           </div>
           <!--Description user Resource-->
           <div class="col-12">
             <dynamic-form v-if="!loading" v-model="form.description" v-bind="formProps.description"
-                          class="box" @submit="saveResource"/>
+                          @submit="saveResource"/>
           </div>
         </div>
         <!--Inner loading-->
@@ -223,19 +221,19 @@ export default {
       let configs = {
         //No added to zoom
         0: {
-          class: 'bg-amber',
+          class: 'bg-amber q-mt-md',
           icon: 'fas fa-exclamation-triangle',
           message: this.$tr('qbooking.layout.message.meet.notFound')
         },
         //Pending to verified
         1: {
-          class: 'bg-info',
+          class: 'bg-info q-mt-md',
           icon: 'fas fa-info-circle',
           message: this.$tr('qbooking.layout.message.meet.pending')
         },
         //Added
         2: {
-          class: 'bg-green',
+          class: 'bg-green q-mt-md',
           icon: 'fas fa-check-circle',
           message: this.$tr('qbooking.layout.message.meet.success')
         }
@@ -282,7 +280,7 @@ export default {
         //instance formData
         let formData = {
           ...this.form.schedule, ...this.form.description,
-          options : {email : this.form.meet.options.email},
+          options: {email: this.form.meet.options.email},
           meetingConfig: {
             providerName: 'zoom',
             email: this.form.meet.options.email
