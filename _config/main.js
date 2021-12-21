@@ -1,4 +1,5 @@
 export default {
+  moduleName: 'ibooking',
   //Entities
   entityNames: {
     category: 'category',
