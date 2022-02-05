@@ -15,14 +15,14 @@
           </div>
           <!--Meet-->
           <div class="col-12">
-            <dynamic-form v-model="form.meet" v-bind="formProps.meet"/>
-            <!--Help Caption-->
-            <q-banner v-if="meetBannerHelp" rounded dense :class="meetBannerHelp.class">
-              <template v-slot:avatar>
-                <q-icon :name="meetBannerHelp.icon" color="white"/>
-              </template>
-              <div class="text-white">{{ meetBannerHelp.message }}</div>
-            </q-banner>
+            <div id="meetSection" class="box box-auto-height">
+              <dynamic-form v-model="form.meet" v-bind="formProps.meet"/>
+              <div class="text-right">
+                <q-btn color="grey-3" :label="$tr('qbooking.layout.registerZoom')" unelevated rounded no-caps
+                       @click="$helper.openExternalURL('https://zoom.us/signin', true)"
+                       text-color="grey-8"/>
+              </div>
+            </div>
           </div>
           <!--Description user Resource-->
           <div class="col-12">
@@ -96,16 +96,24 @@ export default {
           ]
         },
         meet: {
-          title: this.$trp('ui.label.meet'),
+          title: this.$trp('qbooking.layout.meetingPlatform'),
           defaultColClass: 'col-12',
           noActions: true,
           blocks: [
             {
               fields: {
+                textInfo: {
+                  type: 'banner',
+                  props: {
+                    textColor: 'white',
+                    ...this.meetInfoConfig
+                  }
+                },
                 email: {
                   value: null,
                   type: 'input',
                   fakeFieldName: 'options',
+                  help: {description: this.$tr('qbooking.layout.termsZoom')},
                   props: {
                     label: `Zoom | ${this.$tr('ui.form.email')}`,
                     rules: [
@@ -113,16 +121,7 @@ export default {
                       val => this.$helper.validateEmail(val) || this.$tr('ui.message.fieldEmail')
                     ],
                   }
-                },
-                providerStatusName: {
-                  value: null,
-                  type: 'input',
-                  fakeFieldName: 'meetingConfig',
-                  props: {
-                    label: `Zoom | ${this.$tr('ui.form.status')}`,
-                    readonly: true
-                  }
-                },
+                }
               }
             }
           ]
@@ -213,34 +212,35 @@ export default {
       }
     },
     //help banner to meet
-    meetBannerHelp() {
-      //Validate
-      if (!this.userResource || !this.userResource.meetingConfig) return false
+    meetInfoConfig() {
+      //Instance config key
+      let configKey = (!this.userResource || !this.userResource.meetingConfig) ? 0 :
+          this.userResource.meetingConfig.providerStatus
 
       //instance banner config
       let configs = {
         //No added to zoom
         0: {
-          class: 'bg-amber q-mt-md',
+          color: 'amber',
           icon: 'fas fa-exclamation-triangle',
           message: this.$tr('qbooking.layout.message.meet.notFound')
         },
         //Pending to verified
         1: {
-          class: 'bg-info q-mt-md',
+          color: 'info',
           icon: 'fas fa-info-circle',
           message: this.$tr('qbooking.layout.message.meet.pending')
         },
         //Added
         2: {
-          class: 'bg-green q-mt-md',
+          color: 'green',
           icon: 'fas fa-check-circle',
           message: this.$tr('qbooking.layout.message.meet.success')
         }
       }
 
       //Response
-      return configs[this.userResource.meetingConfig.providerStatus]
+      return configs[configKey]
     }
   },
   methods: {
@@ -315,4 +315,9 @@ export default {
 }
 </script>
 <style lang="stylus">
+#userReousrcePage
+  #meetSection
+    #dynamicFormComponentContent
+      box-shadow none
+      padding 0
 </style>

@@ -23,6 +23,13 @@ export default {
   chooseTimeReservation: 'Choose the time for your reservation',
 
   myResource: 'My Resource',
+  meetingPlatform: 'Meeting platform',
+  registerZoom: "I don't have a zoom account",
+  termsZoom: "When you are added to the new Zoom account, ownership of your existing Zoom account (and the information " +
+    "contained therein) will transfer and be assigned to the owner of the new Zoom account. All information and data " +
+    "currently contained in your Zoom account and all information or data saved once you accept the account switch " +
+    "will be viewable and available to the new Zoom account owner and administrators on that account to use and " +
+    "share with others subject to the said account owner's discretion",
   message: {
     meet: {
       notFound: 'Enter your Zoom account (email) to link and create meetings ...',
