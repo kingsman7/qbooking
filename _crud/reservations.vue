@@ -18,6 +18,7 @@ export default {
           to: {name: 'qbooking.panel.reservations.create'}
         },
         read: {
+          hideHeader : true,
           showAs: 'grid',
           allowToggleView: false,
           columns: [
