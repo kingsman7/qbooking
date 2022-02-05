@@ -1,16 +1,18 @@
 <template>
-  <div id="reservationsPage">
+  <div id="reservationsPage" class="relative-position">
     <!--page actions-->
     <div class="box box-auto-height q-mb-md">
-      <page-actions :title="$tr($route.meta.title)" @refresh="init" :extra-actions="extraPageActions"
+      <page-actions :title="$tr($route.meta.title)" :extra-actions="extraPageActions" @refresh="getData(true)"
                     @new="$router.push({name : 'qbooking.panel.reservations.create'})"/>
     </div>
     <!--Calendar-->
     <div v-if="view=='calendar'">
-      <calendar />
+      <calendar :events-data="reservationsCalendar"/>
     </div>
     <!--Crud-->
     <crud v-else :crud-data="import('@imagina/qbooking/_crud/reservations')"/>
+    <!--Inner loading-->
+    <inner-loading :visible="loading"/>
   </div>
 </template>
 <script>
@@ -30,7 +32,7 @@ export default {
     return {
       loading: false,
       view: 'calendar',
-      data: []
+      reservations: []
     }
   },
   computed: {
@@ -50,9 +52,36 @@ export default {
         }
       ]
     },
+    //Reservations to calendar
+    reservationsCalendar() {
+      let response = this.reservations.reverse().map(item => {
+        return {
+          icon: 'fas fa-calendar',
+          color: 'primary',
+          date: item.startDate,
+          title: item.serviceTitle,
+          mainDetails: [
+            {
+              icon: 'fas fa-play-circle',
+              value: `${item.reservation.customer.firstName} ${item.reservation.customer.lastName}`
+            },
+            {icon: 'fas fa-play-circle', value: item.categoryTitle},
+            {icon: 'fas fa-play-circle', value: item.resourceTitle},
+          ],
+          card: {
+            title: this.$tr('ui.label.meet'),
+            component: () => import('@imagina/qbooking/_components/crud/reservationCard'),
+            row : item
+          }
+        }
+      })
+
+      return response
+    }
   },
   methods: {
     init() {
+      this.getData()
     },
     //Get data
     getData(refresh = false) {
@@ -60,11 +89,12 @@ export default {
         this.loading = true
         //Requets params
         let requestParams = {
-          refresh: refresh
+          refresh: refresh,
+          params: {include: 'reservation.customer,meetings'}
         }
         //Request
-        this.$crud.index('apiRoutes', requestParams).then(response => {
-          this.data = response.data
+        this.$crud.index('apiRoutes.qbooking.reservationItems', requestParams).then(response => {
+          this.reservations = response.data
           this.loading = false
         }).catch(error => {
           this.loading = false
