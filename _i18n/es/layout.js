@@ -16,7 +16,7 @@ export default {
   descriptionStepResource: 'Elige el que más prefieras',
   titleStepDate: '¿Cuándo quieres tu reserva?',
   descriptionStepDate: 'Elige la fecha y hora',
-  titleStepAvailability: 'Selecciona tu reserva!',
+  titleStepAvailability: '¡Selecciona tu reserva!',
   descriptionStepAvailability: 'Selecciona la reserva de tu preferencía',
 
   chooseDateReservation: 'Elige el día para tu reserva',

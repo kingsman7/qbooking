@@ -6,7 +6,7 @@ export default {
   adminReservations: 'Reservations',
 
   panelUserResource: 'My Resource',
-  panelReservations: 'My Reservations',
+  panelReservations: 'Schedule',
   panelNewReservation: 'New Reservation',
   panelUpdateReservation: 'Update Reservation'
 }

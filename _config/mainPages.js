@@ -24,7 +24,7 @@ export default {
     page: () => import('@imagina/qcrud/_pages/admin/crudPage'),
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
     title: 'qbooking.sidebar.adminServices',
-    icon: 'fas fa-concierge-bell',
+    icon: 'fas fa-handshake',
     subHeader: {
       refresh: true,
     }
