@@ -187,6 +187,27 @@ export default {
     }
   },
   computed: {
+    //Return settings data
+    settings() {
+      return {
+        timeRangeFilter: JSON.parse(this.$store.getters['qsiteApp/getSettingValueByName']('ibooking::timeRangeFilter') || '{}')
+      }
+    },
+    //Options to timeFilter
+    optTimeFilter() {
+      let response = []
+      let labels = Object.keys(this.settings.timeRangeFilter).filter(item => item.includes('label'))
+      let ranges = this.settings.timeRangeFilter
+
+      labels.forEach((labelKey, index) => {
+        let tmpIndex = index + 1
+        if (ranges[`label${tmpIndex}`] && ranges[`startTime${tmpIndex}`] && ranges[`endTime${tmpIndex}`]) {
+          response.push({label: ranges[labelKey], value: tmpIndex})
+        }
+      })
+
+      return response
+    },
     //steps
     steps() {
       return this.filterByResource ? ['category', 'service', 'date', 'availability'] :
@@ -286,6 +307,7 @@ export default {
         date: {
           type: 'date',
           props: {
+            clearable: true,
             label: this.$tr('qbooking.layout.chooseDateReservation'),
             options: (date) => {
               //Limit to date from today
@@ -294,16 +316,11 @@ export default {
           }
         },
         time: {
-          type: 'hour',
+          type: 'select',
           props: {
+            clearable: true,
             label: this.$tr('qbooking.layout.chooseTimeReservation'),
-            options: (hr) => {
-              //If the date if today, allow only future time
-              if (this.filters.date == this.$moment().format('YYYY/MM/DD'))
-                if (hr <= parseInt(this.$moment().format('HH'))) return false
-
-              return true
-            },
+            options: this.optTimeFilter
           }
         }
       }
@@ -427,11 +444,20 @@ export default {
       return new Promise((resolve, reject) => {
         this.loading = true
         this.availabilities = []
+
         //Request params
         let requestParams = {
           refresh: refresh,
-          params: {filter: this.filters}
+          params: {filter: this.$clone(this.filters)}
         }
+
+        if (this.filters.time) {
+          requestParams.params.filter.time = [
+            this.settings.timeRangeFilter[`startTime${this.filters.time}`],
+            this.settings.timeRangeFilter[`endTime${this.filters.time}`],
+          ]
+        }
+
         //Request
         this.$crud.index('apiRoutes.qbooking.availabilities', requestParams).then(response => {
           this.availabilities = response.data.map(item => {
@@ -476,7 +502,8 @@ export default {
         //Request
         this.$crud.create('apiRoutes.qbooking.reservations', requestData).then(response => {
           this.successReserve = true
-          window.open(this.$store.state.qsiteApp.baseUrl + '/tienda/checkout')
+          if (response.data && response.data.redirectTo)
+            this.$helper.openExternalURL(response.data.redirectTo, true)
           this.loading = false
         }).catch(error => {
           this.loading = false
