@@ -108,7 +108,12 @@
           <!--availability-->
           <q-tab-panel name="availability">
             <q-scroll-area style="height: 370px; width: 100%;">
-              <div class="row q-col-gutter-sm">
+              <!--Not result-->
+              <div v-if="!availabilities.length" class="q-mt-md">
+                <not-result />
+              </div>
+              <!--Availabilities-->
+              <div v-else class="row q-col-gutter-sm">
                 <div v-for="(availability, keyService) in availabilities" :key="keyService" class="col-12"
                      @click="selectItem('availabilityId',availability.id)" v-if="!availability.isBusy">
                   <div :class="`item-selectable row items-center ${classSelected('availabilityId',availability.id)}`">
