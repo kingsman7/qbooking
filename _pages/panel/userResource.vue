@@ -264,10 +264,12 @@ export default {
         //Request
         this.$crud.show('apiRoutes.qbooking.resources', this.userData.id, requestParams).then(response => {
           this.userResource = response.data
-          this.form.description = this.$clone(response.data)
-          this.form.schedule = this.$clone(response.data)
-          this.form.meet = this.$clone(response.data)
-          this.loading = false
+          setTimeout(() => {
+            this.form.description = this.$clone(response.data)
+            this.form.schedule = this.$clone(response.data)
+            this.form.meet = this.$clone(response.data)
+            this.loading = false
+          }, 200)
         }).catch(error => {
           this.loading = false
         })
