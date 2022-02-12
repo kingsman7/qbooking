@@ -1,22 +1,22 @@
 <template>
-  <div id="reservationsPage" class="relative-position">
+  <div id="reservationsPage">
     <!--page actions-->
     <div class="box box-auto-height q-mb-md">
       <page-actions :title="$tr($route.meta.title)" :extra-actions="extraPageActions" @refresh="getData(true)"
                     @new="$router.push({name : 'qbooking.panel.reservations.create'})"/>
     </div>
     <!--Calendar-->
-    <calendar v-if="reservationsCalendar.length" :events-data="reservationsCalendar"/>
-    <!--Empty result-->
-    <div v-else class="box row items-center justify-center">
-      <not-result/>
+    <div v-if="view == 'calendar'" class="relative-position">
+      <calendar v-if="reservationsCalendar.length" :events-data="reservationsCalendar"/>
+      <!--Empty result-->
+      <div v-else class="box row items-center justify-center">
+        <not-result/>
+      </div>
+      <!--Inner loading-->
+      <inner-loading :visible="loading"/>
     </div>
     <!--Crud-->
-    <!--
     <crud v-else :crud-data="import('@imagina/qbooking/_crud/reservations')"/>
-    -->
-    <!--Inner loading-->
-    <inner-loading :visible="loading"/>
   </div>
 </template>
 <script>
@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       loading: false,
-      view: 'calendar',
+      view: config('app.mode') == 'ipanel' ? 'calendar' : 'crud',
       reservations: []
     }
   },
@@ -47,8 +47,9 @@ export default {
         'new',
         {//action to turn view type
           label: this.$tr(`ui.label.view`),
+          vIf: false,
           props: {
-            icon: this.view == "calendar" ? 'fas fa-grip-horizontal' : 'fas fa-calendar-alt'
+            icon: this.view == "calendar" ? 'fas fa-list-ul' : 'fas fa-calendar-alt'
           },
           action: () => {
             this.view = (this.view == 'calendar') ? 'crud' : 'calendar'
@@ -65,6 +66,7 @@ export default {
           date: item.startDate,
           title: item.serviceTitle,
           mainDetails: [
+            {value: `${this.$tr('ui.form.status')}: ${item.statusName}`},
             {
               icon: 'fas fa-play-circle',
               value: `${item.reservation.customer.firstName} ${item.reservation.customer.lastName}`

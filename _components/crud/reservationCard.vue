@@ -17,8 +17,19 @@
       </div>
       <!--Separator-->
       <q-separator class="q-my-sm"/>
-      <!--Customer data-->
+      <!--Status data-->
       <div class="customer-content">
+        <!--Title-->
+        <div class="q-mb-xs">{{ $tr('ui.form.status') }}</div>
+        <!--full name-->
+        <div class="text-grey-6 text-caption">
+          {{ rowData.statusName }}
+        </div>
+      </div>
+      <!--Separator-->
+      <q-separator class="q-my-sm"/>
+      <!--Customer data-->
+      <div class="customer-content" v-if="rowData.reservation && rowData.reservation.customer">
         <!--Title-->
         <div class="q-mb-xs">{{ $tr('ui.label.customer') }}</div>
         <!--full name-->

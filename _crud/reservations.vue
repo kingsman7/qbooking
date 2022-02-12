@@ -18,18 +18,23 @@ export default {
           to: {name: 'qbooking.panel.reservations.create'}
         },
         read: {
-          hideHeader : true,
-          showAs: 'grid',
-          allowToggleView: false,
+          hideHeader: true,
           columns: [
             {name: 'id', label: this.$tr('ui.form.id'), field: 'id', style: 'width: 50px'},
-            {name: 'title', label: this.$tr('ui.form.title'), field: 'title', align: 'rigth'},
-            {name: 'slug', label: this.$tr('ui.form.slug'), field: 'slug', align: 'left'},
-            {name: 'status', label: this.$tr('ui.form.status'), field: 'status', align: 'left'},
+            {name: 'resourceTitle', label: this.$tr('ui.label.resource'), field: 'resourceTitle', align: 'left'},
             {
-              name: 'services', label: this.$trp('ui.label.service'), field: 'services',
-              align: 'left', classes: 'ellipsis', style: 'max-width : 250px',
-              format: val => val ? val.map(item => item.title).join(', ') : ''
+              name: 'service', label: this.$tr('ui.label.service'), align: 'left',
+              format: (val, row) => `${row.categoryTitle}, ${row.serviceTitle}`
+            },
+            {name: 'statusName', label: this.$tr('ui.form.status'), field: 'statusName', align: 'left'},
+            {
+              name: 'startDate', label: this.$tr('ui.form.startDate'), field: 'startDate', align: 'left',
+              format: val => val ? this.$trd(val, {type: 'shortHuman'}) : '-',
+            },
+            {
+              name: 'customer', label: this.$tr('ui.label.customer'), align: 'left',
+              format: (val, row) => !row.reservation || !row.reservation.customer ? '-' :
+                  `${row.reservation.customer.firstName} ${row.reservation.customer.lastName}`,
             },
             {
               name: 'created_at', label: this.$tr('ui.form.createdAt'), field: 'createdAt', align: 'left',
@@ -44,77 +49,82 @@ export default {
           requestParams: {include: 'reservation.customer,meetings'},
           grid: {
             component: () => import('@imagina/qbooking/_components/crud/reservationCard'),
+          },
+          filters: {
+            userId: {
+              value: null,
+              type: 'select',
+              props: {
+                label: this.$tr('ui.label.user')
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.quser.users',
+                select: {label: 'fullName', id: 'id'}
+              }
+            },
           }
         },
-        update: false,
-        delete: false,
+        update: {
+          title: this.$tr('qbooking.layout.updateReservation')
+        },
+        delete: true,
         formLeft: {
           id: {value: ''},
-          userId: {value: this.$store.state.quserAuth.userId},
-          title: {
-            value: '',
-            type: 'input',
-            isTranslatable: true,
+          categoryId: {
+            value: null,
+            type: 'select',
             props: {
-              label: `${this.$tr('ui.form.title')}*`,
-              rules: [
-                val => !!val || this.$tr('ui.message.fieldRequired')
-              ],
+              label: this.$tr('ui.label.category'),
+              readonly: true
             },
-          },
-          slug: {
-            value: '',
-            type: 'input',
-            isTranslatable: true,
-            props: {
-              label: `${this.$tr('ui.form.slug')}*`,
-              rules: [
-                val => !!val || this.$tr('ui.message.fieldRequired')
-              ],
+            loadOptions: {
+              apiRoute: 'apiRoutes.qbooking.categories'
             }
           },
-          description: {
-            value: '',
-            type: 'html',
-            isTranslatable: true,
+          serviceId: {
+            value: null,
+            type: 'select',
             props: {
-              label: `${this.$tr('ui.form.description')}*`,
-              rules: [
-                val => !!val || this.$tr('ui.message.fieldRequired')
-              ],
+              label: this.$tr('ui.label.service'),
+              readonly: true
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qbooking.services'
             }
-          }
-        },
-        formRight: {
+          },
+          resourceId: {
+            value: null,
+            type: 'select',
+            props: {
+              label: this.$tr('ui.label.resource'),
+              readonly: true
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qbooking.resources'
+            }
+          },
           status: {
-            value: '1',
             type: 'select',
             isTranslatable: false,
             props: {
               label: `${this.$tr('ui.form.status')}*`,
               options: [
-                {label: this.$tr('ui.label.enabled'), value: '1'},
-                {label: this.$tr('ui.label.disabled'), value: '0'}
+                {label: this.$tr('ui.label.pending'), value: '0'},
+                {label: this.$tr('ui.label.approved'), value: '1'},
+                {label: this.$tr('ui.label.cancelled'), value: '2'}
               ],
               rules: [
                 val => !!val || this.$tr('ui.message.fieldRequired')
               ],
             }
           },
-          services: {
-            value: [],
-            type: 'crud',
+          startDate: {
+            type: 'fullDate',
             props: {
-              crudType: 'select',
-              crudData: import('@imagina/qbooking/_crud/services'),
-              crudProps: {
-                label: this.$trp('ui.label.service'),
-                multiple: true,
-                useChips: true
-              },
-            },
-          },
-        },
+              label: this.$tr('ui.form.startDate')
+            }
+          }
+        }
       }
     },
     //Crud info
