@@ -6,11 +6,15 @@
                     @new="$router.push({name : 'qbooking.panel.reservations.create'})"/>
     </div>
     <!--Calendar-->
-    <div v-if="view=='calendar'">
-      <calendar :events-data="reservationsCalendar"/>
+    <calendar v-if="reservationsCalendar.length" :events-data="reservationsCalendar"/>
+    <!--Empty result-->
+    <div v-else class="box row items-center justify-center">
+      <not-result/>
     </div>
     <!--Crud-->
+    <!--
     <crud v-else :crud-data="import('@imagina/qbooking/_crud/reservations')"/>
+    -->
     <!--Inner loading-->
     <inner-loading :visible="loading"/>
   </div>
@@ -71,7 +75,7 @@ export default {
           card: {
             title: this.$tr('ui.label.meet'),
             component: () => import('@imagina/qbooking/_components/crud/reservationCard'),
-            row : item
+            row: item
           }
         }
       })
@@ -90,7 +94,10 @@ export default {
         //Requets params
         let requestParams = {
           refresh: refresh,
-          params: {include: 'reservation.customer,meetings'}
+          params: {
+            include: 'reservation.customer,meetings',
+            filter: config('app.mode') == 'iadmin' ? {} : {userId: this.$store.state.quserAuth.userId}
+          }
         }
         //Request
         this.$crud.index('apiRoutes.qbooking.reservationItems', requestParams).then(response => {
