@@ -8,7 +8,8 @@ export default [
     children: [
       pages.mainqbooking.categories,
       pages.mainqbooking.services,
-      pages.qbooking.resources
+      pages.qbooking.resources,
+      pages.mainqbooking.reservations
     ]
   },
 ]

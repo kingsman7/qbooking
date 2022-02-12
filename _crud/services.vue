@@ -43,6 +43,10 @@ export default {
               format: val => val ? this.$tr('ui.label.yes') : this.$tr('ui.label.no')
             },
             {
+              name: 'form', label: this.$tr('ui.label.form'), field: 'form',
+              align: 'left', format: val => val ? val.title : '-'
+            },
+            {
               name: 'created_at', label: this.$tr('ui.form.createdAt'), field: 'createdAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
@@ -83,6 +87,22 @@ export default {
                 val => !!val || this.$tr('ui.message.fieldRequired')
               ],
             }
+          },
+          formId: {
+            type: 'crud',
+            props: {
+              crudType: 'select',
+              crudData: import('@imagina/qform/_crud/crudForms'),
+              crudProps: {
+                label: `${this.$tr('ui.label.form')}`,
+                clearable: true
+              },
+              config: {
+                options: {
+                  label: 'title', value: 'id'
+                }
+              },
+            },
           },
           description: {
             value: '',
