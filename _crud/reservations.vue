@@ -1,9 +1,34 @@
-<template></template>
+<template>
+  <master-modal v-model="modal.show" @hide="resetModal()" :loading="modal.loading"
+                :title="modal.title" custom-position>
+    <div class="box">
+      <q-list separator dense>
+        <q-item v-for="(item, itemKey) in modal.requestData" :key="itemKey" style="padding: 8px 0">
+          <q-item-section>
+            <q-item-label v-if="item.fieldType != 'media'">{{ item.label }}</q-item-label>
+            <!--File preview-->
+            <q-item-label v-if="item.fieldType == 'media'">
+              <file-list v-model="item.value" grid-col-class="col-12" hide-header/>
+            </q-item-label>
+            <!--value-->
+            <q-item-label v-else caption>{{ item.value }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
+  </master-modal>
+</template>
 <script>
 export default {
   data() {
     return {
-      crudId: this.$uid()
+      crudId: this.$uid(),
+      modal: {
+        title: null,
+        show: false,
+        loading: false,
+        requestData: []
+      }
     }
   },
   computed: {
@@ -46,7 +71,7 @@ export default {
             },
             {name: 'actions', label: this.$tr('ui.form.actions'), align: 'left'},
           ],
-          requestParams: {include: 'reservation.customer,meetings'},
+          requestParams: {include: 'reservation.customer,meetings,service,fields'},
           grid: {
             component: () => import('@imagina/qbooking/_components/crud/reservationCard'),
           },
@@ -62,7 +87,21 @@ export default {
                 select: {label: 'fullName', id: 'id'}
               }
             },
-          }
+          },
+          actions: [
+            {
+              name: 'viewLead',
+              icon: 'fas fa-info-circle',
+              color: 'info',
+              tooltip: this.$tr('ui.label.information'),
+              format: (field) => {
+                return (field.row.service && field.row.service.form) ? {} : {vIf: false}
+              },
+              action: (item) => {
+                this.showRequestData(item)
+              }
+            }
+          ]
         },
         update: {
           title: this.$tr('qbooking.layout.updateReservation')
@@ -132,5 +171,61 @@ export default {
       return this.$store.state.qcrudComponent.component[this.crudId] || {}
     }
   },
+  methods: {
+    //Fields to show
+    async showRequestData(requestData) {
+      //Set modal data
+      this.modal = {
+        title: requestData.service.title,
+        show: true,
+        loading: true,
+        requestData: [],
+      }
+
+      //Get form data
+      let form = requestData.service?.form || false
+
+      //Merge values
+      if (form) {
+        //Get field values
+        let requestValues = {}
+        requestData.fields.forEach(item => requestValues[item.name] = item.value)
+        //get files
+        let files = this.$clone(requestData.files || [])
+        //Request data
+        let requestFormParams = {refresh: true, params: {include: 'fields'}}
+        //Get form
+        this.$crud.show('apiRoutes.qform.forms', form.id, requestFormParams).then(response => {
+          this.$clone(response.data.fields).forEach(field => {
+            let fieldType = field.dynamicField?.type || 'input'//get field type
+            let fieldValue = requestValues[this.$helper.convertStringToSnakeCase(field.name)] || '-'//get field value
+            //Get field file
+            let fieldFile = (fieldType != 'media') ? null :
+                files.find(item => item.zone == (field.dynamicField.props.zone || 'mainimage'))
+
+            //Add extra data to field
+            this.modal.requestData.push({
+              ...field,
+              label: field.label.replace('*', ''),
+              value: (fieldType != 'media') ? fieldValue : [{
+                id: this.$uid(),
+                ...fieldFile,
+                filename: field.label,
+              }],
+              fieldType: fieldType
+            })
+          })
+
+          this.modal.loading = false
+        }).catch(error => {
+          this.modal.loading = false
+        })
+      }
+    },
+    //Reset Modal
+    resetModal() {
+      this.modal = {show: false, request: false}
+    }
+  }
 }
 </script>
