@@ -7,7 +7,7 @@
           <q-icon name="fas fa-check-circle" color="green" size="50px" class="q-mb-md"/>
           <div class="text-grey-8 text-h5 q-mb-md">¡{{ $tr('ui.label.reserved') }}!</div>
           <q-btn :label="$tr('ui.label.finalize')" color="green" rounded unelevated
-                 :to="{name : 'qbooking.panel.reservations.index'}"/>
+                 @click="actionAfterReservation()"/>
         </div>
       </div>
       <!--Form content-->
@@ -41,7 +41,7 @@
           <q-option-group v-model="step" inline dense size="30px" :options="optionsRadioTabs" disable/>
         </div>
         <!--Stepper content-->
-        <q-tab-panels v-model="step" animated ref="stepsForm">
+        <q-tab-panels v-model="step" animated ref="stepsForm" keep-alive>
           <!--Step Category-->
           <q-tab-panel name="category">
             <q-scroll-area style="height: 350px; width: 100%;">
@@ -77,6 +77,14 @@
               </div>
             </q-scroll-area>
           </q-tab-panel>
+          <!--Step Form Service-->
+          <q-tab-panel v-if="serviceForm.id" name="formService">
+            <q-scroll-area style="height: 350px; width: 100%;">
+              <dynamic-form v-model="serviceForm.fields" form-type="grid" :form-id="serviceForm.id"
+                            no-actions ref="formService" @obtainedForm="form => serviceForm.data = form"
+                            @validated="val => serviceForm.isValid = val"/>
+            </q-scroll-area>
+          </q-tab-panel>
           <!--Step Resource-->
           <q-tab-panel name="resource" v-if="!filterByResource">
             <q-scroll-area style="height: 350px; width: 100%;">
@@ -110,7 +118,7 @@
             <q-scroll-area style="height: 370px; width: 100%;">
               <!--Not result-->
               <div v-if="!availabilities.length" class="q-mt-md">
-                <not-result />
+                <not-result/>
               </div>
               <!--Availabilities-->
               <div v-else class="row q-col-gutter-sm">
@@ -189,6 +197,7 @@ export default {
       services: [],
       resources: [],
       availabilities: [],
+      serviceForm: {}
     }
   },
   computed: {
@@ -215,8 +224,15 @@ export default {
     },
     //steps
     steps() {
-      return this.filterByResource ? ['category', 'service', 'date', 'availability'] :
+      //Instance response
+      let response = this.filterByResource ? ['category', 'service', 'date', 'availability'] :
           ['category', 'service', 'resource', 'date', 'availability']
+
+      //Add formService Step
+      if (this.serviceForm.id) response.splice(2, 0, "formService")
+
+      //Response
+      return response
     },
     //Headers steppers
     headerSteps() {
@@ -228,6 +244,10 @@ export default {
         service: {
           title: this.$tr('qbooking.layout.titleStepService'),
           description: this.$tr('qbooking.layout.descriptionStepService')
+        },
+        formService: {
+          title: this.serviceForm.data?.title || this.$tr('qbooking.layout.titleStepService'),
+          description: ''
         },
         resource: {
           title: this.$tr('qbooking.layout.titleStepResource'),
@@ -281,6 +301,14 @@ export default {
             let actions = {
               category: this.filterByResource ? false : () => this.getServices(true),
               service: () => this.filterByResource ? false : this.getResources(true),
+              formService: () => {
+                //Validate form
+                if (this.$refs.formService) this.$refs.formService.changeStep('next', true)
+                //Change step if form is valid
+                setTimeout(() => {
+                  if (this.serviceForm.isValid) this.$refs.stepsForm.next()
+                }, 200)
+              },
               date: () => this.getAvailabilities(true),
               availability: () => this.createReservation()
             }
@@ -289,7 +317,7 @@ export default {
             if (actions[this.step]) actions[this.step]()
 
             //go to next step
-            if (actions[this.step] != 'availability') this.$refs.stepsForm.next()
+            if (!['formService', 'availability'].includes(this.step)) this.$refs.stepsForm.next()
           }
         }
       }
@@ -329,10 +357,27 @@ export default {
           }
         }
       }
+    },
+    //Default data to service for
+    dataServiceForm() {
+      //Instance fields
+      let fields = {}
+      try {
+        fields = JSON.parse(this.$route.query.fields)
+      } catch {
+      }
+
+      return {
+        id: null,
+        data: null,
+        isValid: false,
+        fields: this.$clone(fields)
+      }
     }
   },
   methods: {
     init() {
+      this.serviceForm = this.$clone(this.dataServiceForm)
       this.getData(true)
     },
     //get data
@@ -367,7 +412,7 @@ export default {
             if (service) {
               this.selectItem('serviceId', service.id)
               this.selectItem('categoryId', service.categoryId)
-              this.step = 'date'
+              this.step = service.formId ? 'formService' : 'date'
             }
           }
 
@@ -479,6 +524,14 @@ export default {
     //Select Item
     selectItem(filterName, itemId) {
       this.filters[filterName] = (this.filters[filterName] == itemId) ? null : itemId
+      //Load service form
+      if (filterName == 'serviceId') {
+        let service = this.services.find(item => item.id == itemId)
+        this.serviceForm = {
+          ...this.$clone(this.dataServiceForm),
+          id: service.formId
+        }
+      }
     },
     //Return class to selected items
     classSelected(filterName, itemId) {
@@ -493,6 +546,7 @@ export default {
         let requestData = {
           customerId: this.$store.state.quserAuth.userId,
           items: [{
+            ...this.serviceForm.fields,
             categoryId: this.selected.category.id,
             categoryTitle: this.selected.category.title,
             serviceId: this.selected.service.id,
@@ -514,6 +568,14 @@ export default {
           this.loading = false
         })
       })
+    },
+    //Redirect after reservation
+    actionAfterReservation() {
+      if (this.$store.state.quserAuth.authenticated) {
+        this.$router.push({name: 'qbooking.panel.reservations.index'})
+      } else {
+        window.location.href = this.$store.state.qsiteApp.baseUrl
+      }
     }
   }
 }

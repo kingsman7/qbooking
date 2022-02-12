@@ -49,12 +49,23 @@ export default {
     authenticated: true,
     path: '/booking/reservations/create',
     name: 'qbooking.panel.reservations.create',
-    page: () => import('@imagina/qbooking/_pages/panel/form'),
+    page: () => import('@imagina/qbooking/_pages/main/formReservation'),
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
     title: 'qbooking.sidebar.panelNewReservation',
     icon: 'fas fa-tasks',
     subHeader: {
       refresh: true,
     }
+  },
+  newPublicReservation: {
+    //permission: 'ibooking.reservations.create',
+    activated: true,
+    //authenticated: true,
+    path: '/booking/reservations/create/public',
+    name: 'qbooking.panel.reservations.create.public',
+    page: () => import('@imagina/qbooking/_pages/main/formReservation'),
+    layout: () => import('@imagina/qsite/_layouts/blankLogo.vue'),
+    title: 'qbooking.sidebar.panelNewReservation',
+    icon: 'fas fa-tasks'
   }
 }
