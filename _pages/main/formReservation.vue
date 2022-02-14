@@ -5,8 +5,8 @@
       <div class="box text-center" v-if="successReserve">
         <div class="q-py-lg">
           <q-icon name="fas fa-check-circle" color="green" size="50px" class="q-mb-md"/>
-          <div class="text-grey-8 text-h5 q-mb-md">¡{{ $tr('ui.label.reserved') }}!</div>
-          <q-btn :label="$tr('ui.label.finalize')" color="green" rounded unelevated
+          <div class="text-grey-8 text-h5 q-mb-md">¡{{ $tr('isite.cms.label.reserved') }}!</div>
+          <q-btn :label="$tr('isite.cms.label.finalize')" color="green" rounded unelevated
                  @click="actionAfterReservation()"/>
         </div>
       </div>
@@ -14,7 +14,7 @@
       <div class="box relative-position" v-else>
         <!--Title-->
         <div class="col-12 text-primary text-weight-bold text-subtitle1 text-center q-mb-md">
-          {{ $tr('qbooking.layout.newReservation') }}
+          {{ $tr('ibooking.cms.newReservation') }}
         </div>
         <!--Resource data-->
         <q-banner v-if="resourceData" id="bannerResourceData" class="bg-primary text-white">
@@ -238,28 +238,28 @@ export default {
     headerSteps() {
       return {
         category: {
-          title: this.$tr('qbooking.layout.titleStepCategory'),
-          description: this.$tr('qbooking.layout.descriptionStepCategory')
+          title: this.$tr('ibooking.cms.titleStepCategory'),
+          description: this.$tr('ibooking.cms.descriptionStepCategory')
         },
         service: {
-          title: this.$tr('qbooking.layout.titleStepService'),
-          description: this.$tr('qbooking.layout.descriptionStepService')
+          title: this.$tr('ibooking.cms.titleStepService'),
+          description: this.$tr('ibooking.cms.descriptionStepService')
         },
         formService: {
-          title: this.serviceForm.data?.title || this.$tr('qbooking.layout.titleStepService'),
+          title: this.serviceForm.data?.title || this.$tr('ibooking.cms.titleStepService'),
           description: ''
         },
         resource: {
-          title: this.$tr('qbooking.layout.titleStepResource'),
-          description: this.$tr('qbooking.layout.descriptionStepResource')
+          title: this.$tr('ibooking.cms.titleStepResource'),
+          description: this.$tr('ibooking.cms.descriptionStepResource')
         },
         date: {
-          title: this.$tr('qbooking.layout.titleStepDate'),
-          description: this.$tr('qbooking.layout.descriptionStepDate')
+          title: this.$tr('ibooking.cms.titleStepDate'),
+          description: this.$tr('ibooking.cms.descriptionStepDate')
         },
         availability: {
-          title: this.$tr('qbooking.layout.titleStepAvailability'),
-          description: this.$tr('qbooking.layout.descriptionStepAvailability')
+          title: this.$tr('ibooking.cms.titleStepAvailability'),
+          description: this.$tr('ibooking.cms.descriptionStepAvailability')
         }
       }
     },
@@ -274,7 +274,7 @@ export default {
       return {
         previous: {
           props: {
-            label: this.$tr('ui.label.back'),
+            label: this.$tr('isite.cms.label.back'),
             color: "grey-7",
             outline: true
           },
@@ -282,7 +282,7 @@ export default {
         },
         skip: {
           props: {
-            label: this.$tr('ui.label.skip'),
+            label: this.$tr('isite.cms.label.skip'),
             color: "grey-7",
             outline: true
           },
@@ -291,7 +291,7 @@ export default {
         },
         next: {
           props: {
-            label: this.$tr('ui.label.next'),
+            label: this.$tr('isite.cms.label.next'),
             color: "green",
             disable: ['category', 'service', 'availability'].includes(this.step) ?
                 (this.filters[`${this.step}Id`] ? false : true) : false
@@ -341,7 +341,7 @@ export default {
           type: 'date',
           props: {
             clearable: true,
-            label: this.$tr('qbooking.layout.chooseDateReservation'),
+            label: this.$tr('ibooking.cms.chooseDateReservation'),
             options: (date) => {
               //Limit to date from today
               return date >= this.$moment().format('YYYY/MM/DD')
@@ -352,7 +352,7 @@ export default {
           type: 'select',
           props: {
             clearable: true,
-            label: this.$tr('qbooking.layout.chooseTimeReservation'),
+            label: this.$tr('ibooking.cms.chooseTimeReservation'),
             options: this.optTimeFilter
           }
         }

@@ -46,7 +46,7 @@ export default {
         'search',
         'new',
         {//action to turn view type
-          label: this.$tr(`ui.label.view`),
+          label: this.$tr(`isite.cms.label.view`),
           vIf: false,
           props: {
             icon: this.view == "calendar" ? 'fas fa-list-ul' : 'fas fa-calendar-alt'
@@ -66,7 +66,7 @@ export default {
           date: item.startDate,
           title: item.serviceTitle,
           mainDetails: [
-            {value: `${this.$tr('ui.form.status')}: ${item.statusName}`},
+            {value: `${this.$tr('isite.cms.form.status')}: ${item.statusName}`},
             {
               icon: 'fas fa-play-circle',
               value: `${item.reservation.customer.firstName} ${item.reservation.customer.lastName}`
@@ -75,7 +75,7 @@ export default {
             {icon: 'fas fa-play-circle', value: item.resourceTitle},
           ],
           card: {
-            title: this.$tr('ui.label.meet'),
+            title: this.$tr('isite.cms.label.meet'),
             component: () => import('@imagina/qbooking/_components/crud/reservationCard'),
             row: item
           }

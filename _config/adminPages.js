@@ -8,7 +8,7 @@ export default {
     crud: import('@imagina/qbooking/_crud/resources'),
     page: () => import('@imagina/qcrud/_pages/admin/crudPage'),
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
-    title: 'qbooking.sidebar.adminResources',
+    title: 'ibooking.cms.sidebar.adminResources',
     icon: 'fas fa-chess-knight',
     subHeader: {
       refresh: true,

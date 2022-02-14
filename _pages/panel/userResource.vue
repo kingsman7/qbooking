@@ -18,7 +18,7 @@
             <div id="meetSection" class="box box-auto-height">
               <dynamic-form v-model="form.meet" v-bind="formProps.meet"/>
               <div class="text-right">
-                <q-btn color="grey-3" :label="$tr('qbooking.layout.registerZoom')" unelevated rounded no-caps
+                <q-btn color="grey-3" :label="$tr('ibooking.cms.registerZoom')" unelevated rounded no-caps
                        @click="$helper.openExternalURL('https://zoom.us/signin', true)"
                        text-color="grey-8"/>
               </div>
@@ -62,7 +62,7 @@ export default {
     extraPageActions() {
       return [
         {//action to copy user resource link, new reservation
-          label: this.$tr(`ui.label.share`),
+          label: this.$tr(`isite.cms.label.share`),
           vIf: this.userResource ? true : false,
           props: {
             icon: 'fas fa-share-alt'
@@ -80,7 +80,7 @@ export default {
     formProps() {
       return {
         schedule: {
-          title: this.$tr('ui.label.availability'),
+          title: this.$tr('isite.cms.label.availability'),
           defaultColClass: 'col-12',
           noActions: true,
           blocks: [
@@ -96,7 +96,7 @@ export default {
           ]
         },
         meet: {
-          title: this.$trp('qbooking.layout.meetingPlatform'),
+          title: this.$trp('ibooking.cms.meetingPlatform'),
           defaultColClass: 'col-12',
           noActions: true,
           blocks: [
@@ -113,12 +113,12 @@ export default {
                   value: null,
                   type: 'input',
                   fakeFieldName: 'options',
-                  help: {description: this.$tr('qbooking.layout.termsZoom')},
+                  help: {description: this.$tr('ibooking.cms.termsZoom')},
                   props: {
-                    label: `Zoom | ${this.$tr('ui.form.email')}`,
+                    label: `Zoom | ${this.$tr('isite.cms.form.email')}`,
                     rules: [
-                      //val => !!val || this.$tr('ui.message.fieldRequired')
-                      val => this.$helper.validateEmail(val) || this.$tr('ui.message.fieldEmail')
+                      //val => !!val || this.$tr('isite.cms.message.fieldRequired')
+                      val => this.$helper.validateEmail(val) || this.$tr('isite.cms.message.fieldEmail')
                     ],
                   }
                 }
@@ -127,7 +127,7 @@ export default {
           ]
         },
         description: {
-          title: this.$tr('qbooking.layout.myResource'),
+          title: this.$tr('ibooking.cms.myResource'),
           defaultColClass: 'col-12',
           blocks: [
             {
@@ -138,7 +138,7 @@ export default {
                   type: 'media',
                   fieldItemId: this.userResource.id || null,
                   props: {
-                    label: this.$tr('ui.form.firstImage'),
+                    label: this.$tr('isite.cms.form.firstImage'),
                     zone: 'mainimage',
                     entity: "Modules\\Ibooking\\Entities\\Resource",
                     entityId: this.userResource.id || null
@@ -149,9 +149,9 @@ export default {
                   type: 'input',
                   isTranslatable: true,
                   props: {
-                    label: `${this.$tr('ui.form.title')}*`,
+                    label: `${this.$tr('isite.cms.form.title')}*`,
                     rules: [
-                      val => !!val || this.$tr('ui.message.fieldRequired')
+                      val => !!val || this.$tr('isite.cms.message.fieldRequired')
                     ],
                   },
                 },
@@ -164,13 +164,13 @@ export default {
                   type: 'select',
                   isTranslatable: false,
                   props: {
-                    label: `${this.$tr('ui.form.status')}*`,
+                    label: `${this.$tr('isite.cms.form.status')}*`,
                     options: [
-                      {label: this.$tr('ui.label.enabled'), value: '1'},
-                      {label: this.$tr('ui.label.disabled'), value: '0'}
+                      {label: this.$tr('isite.cms.label.enabled'), value: '1'},
+                      {label: this.$tr('isite.cms.label.disabled'), value: '0'}
                     ],
                     rules: [
-                      val => !!val || this.$tr('ui.message.fieldRequired')
+                      val => !!val || this.$tr('isite.cms.message.fieldRequired')
                     ],
                   }
                 },
@@ -178,11 +178,11 @@ export default {
                   value: [],
                   type: 'select',
                   props: {
-                    label: `${this.$trp('ui.label.service')}*`,
+                    label: `${this.$trp('isite.cms.label.service')}*`,
                     multiple: true,
                     useChips: true,
                     rules: [
-                      val => val.length || this.$tr('ui.message.fieldRequired')
+                      val => val.length || this.$tr('isite.cms.message.fieldRequired')
                     ],
                   },
                   loadOptions: {
@@ -197,9 +197,9 @@ export default {
                   type: 'input',
                   isTranslatable: true,
                   props: {
-                    label: `${this.$tr('ui.form.description')}*`,
+                    label: `${this.$tr('isite.cms.form.description')}*`,
                     rules: [
-                      val => !!val || this.$tr('ui.message.fieldRequired')
+                      val => !!val || this.$tr('isite.cms.message.fieldRequired')
                     ],
                     type: 'textarea',
                     rows: "3"
@@ -223,19 +223,19 @@ export default {
         0: {
           color: 'amber',
           icon: 'fas fa-exclamation-triangle',
-          message: this.$tr('qbooking.layout.message.meet.notFound')
+          message: this.$tr('ibooking.cms.message.meet.notFound')
         },
         //Pending to verified
         1: {
           color: 'info',
           icon: 'fas fa-info-circle',
-          message: this.$tr('qbooking.layout.message.meet.pending')
+          message: this.$tr('ibooking.cms.message.meet.pending')
         },
         //Added
         2: {
           color: 'green',
           icon: 'fas fa-check-circle',
-          message: this.$tr('qbooking.layout.message.meet.success')
+          message: this.$tr('ibooking.cms.message.meet.success')
         }
       }
 
@@ -292,23 +292,23 @@ export default {
         //Update resource
         if (this.userResource) {
           this.$crud.update('apiRoutes.qbooking.resources', this.userResource.id, formData).then(response => {
-            this.$alert.info(this.$tr('ui.message.recordUpdated'))
+            this.$alert.info(this.$tr('isite.cms.message.recordUpdated'))
             this.getUserResource()
           }).catch(error => {
             console.error('update', error)
             this.loading = false
-            this.$alert.error({message: this.$tr('ui.message.recordNoUpdated')})
+            this.$alert.error({message: this.$tr('isite.cms.message.recordNoUpdated')})
           })
         }
         //cretae resource
         if (!this.userResource) {
           this.$crud.create('apiRoutes.qbooking.resources', formData).then(response => {
-            this.$alert.info({message: this.$tr('ui.message.recordUpdated')})
+            this.$alert.info({message: this.$tr('isite.cms.message.recordUpdated')})
             this.getUserResource()
           }).catch(error => {
             console.error('create', error)
             this.loading = false
-            this.$alert.error(this.$tr('ui.message.recordNoUpdated'))
+            this.$alert.error(this.$tr('isite.cms.message.recordNoUpdated'))
           })
         }
       })

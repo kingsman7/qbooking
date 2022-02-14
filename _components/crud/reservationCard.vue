@@ -20,7 +20,7 @@
       <!--Status data-->
       <div class="customer-content">
         <!--Title-->
-        <div class="q-mb-xs">{{ $tr('ui.form.status') }}</div>
+        <div class="q-mb-xs">{{ $tr('isite.cms.form.status') }}</div>
         <!--full name-->
         <div class="text-grey-6 text-caption">
           {{ rowData.statusName }}
@@ -31,7 +31,7 @@
       <!--Customer data-->
       <div class="customer-content" v-if="rowData.reservation && rowData.reservation.customer">
         <!--Title-->
-        <div class="q-mb-xs">{{ $tr('ui.label.customer') }}</div>
+        <div class="q-mb-xs">{{ $tr('isite.cms.label.customer') }}</div>
         <!--full name-->
         <div class="text-grey-6 text-caption">
           {{ rowData.reservation.customer.firstName }} {{ rowData.reservation.customer.lastName }}
@@ -81,7 +81,7 @@ export default {
           return {
             ...meet,
             meetUrl: (this.$store.state.quserAuth.userId == rowData.reservation.customerId) ? meet.joinUrl : meet.starUrl,
-            btnLabel: this.$tr('ui.label.goTo', {string: meet.providerName})
+            btnLabel: this.$tr('isite.cms.label.goTo', {string: meet.providerName})
           }
         })
       }

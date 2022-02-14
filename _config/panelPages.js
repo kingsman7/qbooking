@@ -8,7 +8,7 @@ export default {
     name: 'qbooking.panel.resource.user',
     page: () => import('@imagina/qbooking/_pages/panel/userResource'),
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
-    title: 'qbooking.sidebar.panelUserResource',
+    title: 'ibooking.cms.sidebar.panelUserResource',
     icon: 'fas fa-chess-knight',
     subHeader: {
       refresh: true,

@@ -15,33 +15,33 @@ export default {
         permission: 'ibooking.resources',
         extraFormFields: 'ibooking.crud-fields.resources',
         create: {
-          title: this.$tr('qbooking.layout.newResource'),
+          title: this.$tr('ibooking.cms.newResource'),
         },
         read: {
           columns: [
-            {name: 'id', label: this.$tr('ui.form.id'), field: 'id', style: 'width: 50px'},
-            {name: 'title', label: this.$tr('ui.form.title'), field: 'title', align: 'rigth'},
-            {name: 'slug', label: this.$tr('ui.form.slug'), field: 'slug', align: 'left'},
-            {name: 'status', label: this.$tr('ui.form.status'), field: 'status', align: 'left'},
+            {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
+            {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'},
+            {name: 'slug', label: this.$tr('isite.cms.form.slug'), field: 'slug', align: 'left'},
+            {name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'left'},
             {
-              name: 'services', label: this.$trp('ui.label.service'), field: 'services',
+              name: 'services', label: this.$trp('isite.cms.label.service'), field: 'services',
               align: 'left', classes: 'ellipsis', style: 'max-width : 250px',
               format: val => val ? val.map(item => item.title).join(', ') : ''
             },
             {
-              name: 'created_at', label: this.$tr('ui.form.createdAt'), field: 'createdAt', align: 'left',
+              name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
             {
-              name: 'updated_at', label: this.$tr('ui.form.updatedAt'), field: 'updatedAt', align: 'left',
+              name: 'updated_at', label: this.$tr('isite.cms.form.updatedAt'), field: 'updatedAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
-            {name: 'actions', label: this.$tr('ui.form.actions'), align: 'left'},
+            {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
           ],
           requestParams: {include: 'services'}
         },
         update: {
-          title: this.$tr('qbooking.layout.updateResource'),
+          title: this.$tr('ibooking.cms.updateResource'),
           requestParams: {include: 'services,schedule.workTimes'}
         },
         delete: true,
@@ -53,9 +53,9 @@ export default {
             type: 'input',
             isTranslatable: true,
             props: {
-              label: `${this.$tr('ui.form.title')}*`,
+              label: `${this.$tr('isite.cms.form.title')}*`,
               rules: [
-                val => !!val || this.$tr('ui.message.fieldRequired')
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
               ],
             },
           },
@@ -64,9 +64,9 @@ export default {
             type: 'input',
             isTranslatable: true,
             props: {
-              label: `${this.$tr('ui.form.slug')}*`,
+              label: `${this.$tr('isite.cms.form.slug')}*`,
               rules: [
-                val => !!val || this.$tr('ui.message.fieldRequired')
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
               ],
             }
           },
@@ -75,9 +75,9 @@ export default {
             type: 'html',
             isTranslatable: true,
             props: {
-              label: `${this.$tr('ui.form.description')}*`,
+              label: `${this.$tr('isite.cms.form.description')}*`,
               rules: [
-                val => !!val || this.$tr('ui.message.fieldRequired')
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
               ],
             }
           }
@@ -88,13 +88,13 @@ export default {
             type: 'select',
             isTranslatable: false,
             props: {
-              label: `${this.$tr('ui.form.status')}*`,
+              label: `${this.$tr('isite.cms.form.status')}*`,
               options: [
-                {label: this.$tr('ui.label.enabled'), value: '1'},
-                {label: this.$tr('ui.label.disabled'), value: '0'}
+                {label: this.$tr('isite.cms.label.enabled'), value: '1'},
+                {label: this.$tr('isite.cms.label.disabled'), value: '0'}
               ],
               rules: [
-                val => !!val || this.$tr('ui.message.fieldRequired')
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
               ],
             }
           },
@@ -105,7 +105,7 @@ export default {
               crudType: 'select',
               crudData: import('@imagina/qbooking/_crud/services'),
               crudProps: {
-                label: this.$trp('ui.label.service'),
+                label: this.$trp('isite.cms.label.service'),
                 multiple: true,
                 useChips: true
               },
@@ -116,7 +116,7 @@ export default {
             value: {},
             type: 'media',
             props: {
-              label: this.$tr('ui.form.firstImage'),
+              label: this.$tr('isite.cms.form.firstImage'),
               zone: 'mainimage',
               entity: "Modules\\Ibooking\\Entities\\Resource",
               entityId: null

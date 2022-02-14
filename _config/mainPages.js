@@ -8,7 +8,7 @@ export default {
     crud: import('@imagina/qbooking/_crud/categories'),
     page: () => import('@imagina/qcrud/_pages/admin/crudPage'),
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
-    title: 'qbooking.sidebar.adminCategories',
+    title: 'ibooking.cms.sidebar.adminCategories',
     icon: 'fas fa-layer-group',
     subHeader: {
       refresh: true,
@@ -23,7 +23,7 @@ export default {
     crud: import('@imagina/qbooking/_crud/services'),
     page: () => import('@imagina/qcrud/_pages/admin/crudPage'),
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
-    title: 'qbooking.sidebar.adminServices',
+    title: 'ibooking.cms.sidebar.adminServices',
     icon: 'fas fa-handshake',
     subHeader: {
       refresh: true,
@@ -37,7 +37,7 @@ export default {
     name: 'qbooking.panel.reservations.index',
     page: () => import('@imagina/qbooking/_pages/main/reservations'),
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
-    title: 'qbooking.sidebar.panelReservations',
+    title: 'ibooking.cms.sidebar.panelReservations',
     icon: 'fas fa-tasks',
     subHeader: {
       refresh: true,
@@ -51,7 +51,7 @@ export default {
     name: 'qbooking.panel.reservations.create',
     page: () => import('@imagina/qbooking/_pages/main/formReservation'),
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
-    title: 'qbooking.sidebar.panelNewReservation',
+    title: 'ibooking.cms.sidebar.panelNewReservation',
     icon: 'fas fa-tasks',
     subHeader: {
       refresh: true,
@@ -65,7 +65,7 @@ export default {
     name: 'qbooking.panel.reservations.create.public',
     page: () => import('@imagina/qbooking/_pages/main/formReservation'),
     layout: () => import('@imagina/qsite/_layouts/blankLogo.vue'),
-    title: 'qbooking.sidebar.panelNewReservation',
+    title: 'ibooking.cms.sidebar.panelNewReservation',
     icon: 'fas fa-tasks'
   }
 }

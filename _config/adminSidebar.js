@@ -3,7 +3,7 @@ const pages = config('pages') // Get Pages from config
 //Blog
 export default [
   {
-    title: 'qbooking.sidebar.adminGroup',
+    title: 'ibooking.cms.sidebar.adminGroup',
     icon: 'fas fa-vote-yea',
     children: [
       pages.mainqbooking.categories,

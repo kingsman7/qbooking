@@ -45,31 +45,31 @@ export default {
         read: {
           hideHeader: true,
           columns: [
-            {name: 'id', label: this.$tr('ui.form.id'), field: 'id', style: 'width: 50px'},
-            {name: 'resourceTitle', label: this.$tr('ui.label.resource'), field: 'resourceTitle', align: 'left'},
+            {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
+            {name: 'resourceTitle', label: this.$tr('isite.cms.label.resource'), field: 'resourceTitle', align: 'left'},
             {
-              name: 'service', label: this.$tr('ui.label.service'), align: 'left',
+              name: 'service', label: this.$tr('isite.cms.label.service'), align: 'left',
               format: (val, row) => `${row.categoryTitle}, ${row.serviceTitle}`
             },
-            {name: 'statusName', label: this.$tr('ui.form.status'), field: 'statusName', align: 'left'},
+            {name: 'statusName', label: this.$tr('isite.cms.form.status'), field: 'statusName', align: 'left'},
             {
-              name: 'startDate', label: this.$tr('ui.form.startDate'), field: 'startDate', align: 'left',
+              name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'left',
               format: val => val ? this.$trd(val, {type: 'shortHuman'}) : '-',
             },
             {
-              name: 'customer', label: this.$tr('ui.label.customer'), align: 'left',
+              name: 'customer', label: this.$tr('isite.cms.label.customer'), align: 'left',
               format: (val, row) => !row.reservation || !row.reservation.customer ? '-' :
                   `${row.reservation.customer.firstName} ${row.reservation.customer.lastName}`,
             },
             {
-              name: 'created_at', label: this.$tr('ui.form.createdAt'), field: 'createdAt', align: 'left',
+              name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
             {
-              name: 'updated_at', label: this.$tr('ui.form.updatedAt'), field: 'updatedAt', align: 'left',
+              name: 'updated_at', label: this.$tr('isite.cms.form.updatedAt'), field: 'updatedAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
-            {name: 'actions', label: this.$tr('ui.form.actions'), align: 'left'},
+            {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
           ],
           requestParams: {include: 'reservation.customer,meetings,service,fields'},
           grid: {
@@ -80,7 +80,7 @@ export default {
               value: null,
               type: 'select',
               props: {
-                label: this.$tr('ui.label.user')
+                label: this.$tr('isite.cms.label.user')
               },
               loadOptions: {
                 apiRoute: 'apiRoutes.quser.users',
@@ -93,7 +93,7 @@ export default {
               name: 'viewLead',
               icon: 'fas fa-info-circle',
               color: 'info',
-              tooltip: this.$tr('ui.label.information'),
+              tooltip: this.$tr('isite.cms.label.information'),
               format: (field) => {
                 return (field.row.service && field.row.service.form) ? {} : {vIf: false}
               },
@@ -104,7 +104,7 @@ export default {
           ]
         },
         update: {
-          title: this.$tr('qbooking.layout.updateReservation')
+          title: this.$tr('ibooking.cms.updateReservation')
         },
         delete: true,
         formLeft: {
@@ -113,7 +113,7 @@ export default {
             value: null,
             type: 'select',
             props: {
-              label: this.$tr('ui.label.category'),
+              label: this.$tr('isite.cms.label.category'),
               readonly: true
             },
             loadOptions: {
@@ -124,7 +124,7 @@ export default {
             value: null,
             type: 'select',
             props: {
-              label: this.$tr('ui.label.service'),
+              label: this.$tr('isite.cms.label.service'),
               readonly: true
             },
             loadOptions: {
@@ -135,7 +135,7 @@ export default {
             value: null,
             type: 'select',
             props: {
-              label: this.$tr('ui.label.resource'),
+              label: this.$tr('isite.cms.label.resource'),
               readonly: true
             },
             loadOptions: {
@@ -146,21 +146,21 @@ export default {
             type: 'select',
             isTranslatable: false,
             props: {
-              label: `${this.$tr('ui.form.status')}*`,
+              label: `${this.$tr('isite.cms.form.status')}*`,
               options: [
-                {label: this.$tr('ui.label.pending'), value: '0'},
-                {label: this.$tr('ui.label.approved'), value: '1'},
-                {label: this.$tr('ui.label.cancelled'), value: '2'}
+                {label: this.$tr('isite.cms.label.pending'), value: '0'},
+                {label: this.$tr('isite.cms.label.approved'), value: '1'},
+                {label: this.$tr('isite.cms.label.cancelled'), value: '2'}
               ],
               rules: [
-                val => !!val || this.$tr('ui.message.fieldRequired')
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
               ],
             }
           },
           startDate: {
             type: 'fullDate',
             props: {
-              label: this.$tr('ui.form.startDate')
+              label: this.$tr('isite.cms.form.startDate')
             }
           }
         }
