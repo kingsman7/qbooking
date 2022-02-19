@@ -95,7 +95,7 @@ export default {
               color: 'info',
               tooltip: this.$tr('isite.cms.label.information'),
               format: (field) => {
-                return (field.row.service && field.row.service.form) ? {} : {vIf: false}
+                return (field.service && field.service.form) ? {} : {vIf: false}
               },
               action: (item) => {
                 this.showRequestData(item)
