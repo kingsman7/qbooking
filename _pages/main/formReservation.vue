@@ -1,6 +1,11 @@
 <template>
   <div id="panelReservationForm">
-    <div class="q-container">
+    <!--No Allow-->
+    <div v-if="!allowPublicReservation">
+      <not-found />
+    </div>
+    <!--Content-->
+    <div v-else class="q-container">
       <!--Success content-->
       <div class="box text-center" v-if="successReserve">
         <div class="q-py-lg">
@@ -204,8 +209,14 @@ export default {
     //Return settings data
     settings() {
       return {
-        timeRangeFilter: JSON.parse(this.$store.getters['qsiteApp/getSettingValueByName']('ibooking::timeRangeFilter') || '{}')
+        timeRangeFilter: JSON.parse(this.$store.getters['qsiteApp/getSettingValueByName']('ibooking::timeRangeFilter') || '{}'),
+        allowPublicReservation: parseInt(this.$store.getters['qsiteApp/getSettingValueByName']('ibooking::allowPublicReservation'))
       }
+    },
+    //Allow public reservations
+    allowPublicReservation() {
+      if (!this.settings.allowPublicReservation && !this.$store.state.quserAuth.userId) return false
+      return true
     },
     //Options to timeFilter
     optTimeFilter() {
