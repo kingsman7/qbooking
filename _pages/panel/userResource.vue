@@ -8,28 +8,7 @@
           <page-actions :title="$tr($route.meta.title)" @refresh="init" :extra-actions="extraPageActions"/>
         </div>
         <!--Form-->
-        <div class="row q-col-gutter-md">
-          <!--Schedule user Resource-->
-          <div class="col-12">
-            <dynamic-form v-model="form.schedule" v-bind="formProps.schedule"/>
-          </div>
-          <!--Meet-->
-          <div class="col-12">
-            <div id="meetSection" class="box box-auto-height">
-              <dynamic-form v-model="form.meet" v-bind="formProps.meet"/>
-              <div class="text-right">
-                <q-btn color="grey-3" :label="$tr('ibooking.cms.registerZoom')" unelevated rounded no-caps
-                       @click="$helper.openExternalURL('https://zoom.us/signin', true)"
-                       text-color="grey-8"/>
-              </div>
-            </div>
-          </div>
-          <!--Description user Resource-->
-          <div class="col-12">
-            <dynamic-form v-if="!loading" v-model="form.description" v-bind="formProps.description"
-                          @submit="saveResource"/>
-          </div>
-        </div>
+        <dynamic-form v-model="form" v-if="!loading" v-bind="formProps" @submit="saveResource"/>
         <!--Inner loading-->
         <inner-loading :visible="loading"/>
       </div>
@@ -50,7 +29,7 @@ export default {
     return {
       loading: false,
       userResource: false,
-      form: {description: {}, meet: {}, schedule: {}}
+      form: {}
     }
   },
   computed: {
@@ -79,136 +58,127 @@ export default {
     //Return user resource form
     formProps() {
       return {
-        schedule: {
-          title: this.$tr('isite.cms.label.availability'),
-          defaultColClass: 'col-12',
-          noActions: true,
-          blocks: [
-            {
-              fields: {
-                schedule: {
-                  value: null,
-                  type: 'schedulable',
-                  props: {},
-                },
-              }
+        formType: 'grid',
+        defaultColClass: 'col-12',
+        //noActions: true,
+        blocks: [
+          {
+            title: this.$tr('isite.cms.label.availability'),
+            fields: {
+              schedule: {
+                value: null,
+                type: 'schedulable',
+                props: {},
+              },
             }
-          ]
-        },
-        meet: {
-          title: this.$trp('ibooking.cms.meetingPlatform'),
-          defaultColClass: 'col-12',
-          noActions: true,
-          blocks: [
-            {
-              fields: {
-                textInfo: {
-                  type: 'banner',
-                  props: {
-                    textColor: 'white',
-                    ...this.meetInfoConfig
-                  }
-                },
-                email: {
-                  value: null,
-                  type: 'input',
-                  fakeFieldName: 'options',
-                  help: {description: this.$tr('ibooking.cms.termsZoom')},
-                  props: {
-                    label: `Zoom | ${this.$tr('isite.cms.form.email')}`,
-                    rules: [
-                      //val => !!val || this.$tr('isite.cms.message.fieldRequired')
-                      val => this.$helper.validateEmail(val) || this.$tr('isite.cms.message.fieldEmail')
-                    ],
-                  }
+          },
+          {
+            title: this.$trp('ibooking.cms.meetingPlatform'),
+            fields: {
+              textInfo: {
+                type: 'banner',
+                props: {
+                  textColor: 'white',
+                  ...this.meetInfoConfig
+                }
+              },
+              email: {
+                value: null,
+                type: 'input',
+                fakeFieldName: 'options',
+                help: {description: this.$tr('ibooking.cms.termsZoom')},
+                props: {
+                  label: `Zoom | ${this.$tr('isite.cms.form.email')}`,
+                  rules: [
+                    val => !!val || this.$tr('isite.cms.message.fieldRequired'),
+                    val => this.$helper.validateEmail(val) || this.$tr('isite.cms.message.fieldEmail')
+                  ],
                 }
               }
             }
-          ]
-        },
-        description: {
-          title: this.$tr('ibooking.cms.myResource'),
-          defaultColClass: 'col-12',
-          blocks: [
-            {
-              fields: {
-                mediasSingle: {
-                  name: 'mediasSingle',
-                  value: {},
-                  type: 'media',
-                  fieldItemId: this.userResource.id || null,
-                  props: {
-                    label: this.$tr('isite.cms.form.firstImage'),
-                    zone: 'mainimage',
-                    entity: "Modules\\Ibooking\\Entities\\Resource",
-                    entityId: this.userResource.id || null
-                  }
+          },
+          {
+            title: this.$tr('ibooking.cms.myResource'),
+            fields: {
+              mediasSingle: {
+                name: 'mediasSingle',
+                value: {},
+                type: 'media',
+                fieldItemId: this.userResource.id || null,
+                props: {
+                  label: this.$tr('isite.cms.form.firstImage'),
+                  zone: 'mainimage',
+                  entity: "Modules\\Ibooking\\Entities\\Resource",
+                  entityId: this.userResource.id || null
+                }
+              },
+              title: {
+                value: this.userData.fullName,
+                type: 'input',
+                isTranslatable: true,
+                props: {
+                  label: `${this.$tr('isite.cms.form.title')}*`,
+                  rules: [
+                    val => !!val || this.$tr('isite.cms.message.fieldRequired')
+                  ],
                 },
-                title: {
-                  value: this.userData.fullName,
-                  type: 'input',
-                  isTranslatable: true,
-                  props: {
-                    label: `${this.$tr('isite.cms.form.title')}*`,
-                    rules: [
-                      val => !!val || this.$tr('isite.cms.message.fieldRequired')
-                    ],
-                  },
-                },
-                slug: {
-                  value: this.$helper.getSlug(this.userData.fullName) + '-' + this.$store.state.quserAuth.userId,
-                  isTranslatable: true
-                },
-                status: {
-                  value: '1',
+              },
+              slug: {
+                value: this.$helper.getSlug(this.userData.fullName) + '-' + this.$store.state.quserAuth.userId,
+                isTranslatable: true
+              },
+              status: {
+                value: '1',
+                type: 'select',
+                isTranslatable: false,
+                props: {
+                  label: `${this.$tr('isite.cms.form.status')}*`,
+                  options: [
+                    {label: this.$tr('isite.cms.label.enabled'), value: '1'},
+                    {label: this.$tr('isite.cms.label.disabled'), value: '0'}
+                  ],
+                  rules: [
+                    val => !!val || this.$tr('isite.cms.message.fieldRequired')
+                  ],
+                }
+              },
+              services: {
+                value: [],
+                type: 'crud',
+                props: {
                   type: 'select',
-                  isTranslatable: false,
-                  props: {
-                    label: `${this.$tr('isite.cms.form.status')}*`,
-                    options: [
-                      {label: this.$tr('isite.cms.label.enabled'), value: '1'},
-                      {label: this.$tr('isite.cms.label.disabled'), value: '0'}
-                    ],
-                    rules: [
-                      val => !!val || this.$tr('isite.cms.message.fieldRequired')
-                    ],
-                  }
-                },
-                services: {
-                  value: [],
-                  type: 'select',
-                  props: {
+                  crudData: import('@imagina/qbooking/_crud/services'),
+                  crudProps: {
                     label: `${this.$trp('isite.cms.label.service')}*`,
                     multiple: true,
-                    useChips: true,
                     rules: [
                       val => val.length || this.$tr('isite.cms.message.fieldRequired')
-                    ],
+                    ]
                   },
-                  loadOptions: {
-                    apiRoute: 'apiRoutes.qbooking.services',
-                    requestParams: !this.$auth.hasAccess('ibooking.services.manage') ? {} : {
-                      filter: {createdBy: this.$store.state.quserAuth.userId}
+                  config: {
+                    requestParams: {
+                      filter: !this.$auth.hasAccess('ibooking.services.manage') ? {} :
+                          {createdBy: this.$store.state.quserAuth.userId}
                     }
-                  }
+                  },
                 },
-                description: {
-                  value: `${this.userData.fullName}...`,
-                  type: 'input',
-                  isTranslatable: true,
-                  props: {
-                    label: `${this.$tr('isite.cms.form.description')}*`,
-                    rules: [
-                      val => !!val || this.$tr('isite.cms.message.fieldRequired')
-                    ],
-                    type: 'textarea',
-                    rows: "3"
-                  }
+              },
+              description: {
+                value: `${this.userData.fullName}...`,
+                type: 'input',
+                isTranslatable: true,
+                props: {
+                  label: `${this.$tr('isite.cms.form.description')}*`,
+                  rules: [
+                    val => !!val || this.$tr('isite.cms.message.fieldRequired')
+                  ],
+                  type: 'textarea',
+                  rows: "3"
                 }
               }
             }
-          ]
-        }
+          }
+        ]
       }
     },
     //help banner to meet
@@ -223,7 +193,17 @@ export default {
         0: {
           color: 'amber',
           icon: 'fas fa-exclamation-triangle',
-          message: this.$tr('ibooking.cms.message.meet.notFound')
+          message: this.$tr('ibooking.cms.message.meet.notFound'),
+          actions: [
+            {
+              props: {
+                label: this.$tr('ibooking.cms.registerZoom')
+              },
+              action: () => {
+                this.$helper.openExternalURL('https://zoom.us/signin', true)
+              }
+            }
+          ]
         },
         //Pending to verified
         1: {
@@ -265,9 +245,7 @@ export default {
         this.$crud.show('apiRoutes.qbooking.resources', this.userData.id, requestParams).then(response => {
           this.userResource = response.data
           setTimeout(() => {
-            this.form.description = this.$clone(response.data)
-            this.form.schedule = this.$clone(response.data)
-            this.form.meet = this.$clone(response.data)
+            this.form = this.$clone(response.data)
             this.loading = false
           }, 200)
         }).catch(error => {
@@ -281,11 +259,10 @@ export default {
         this.loading = true
         //instance formData
         let formData = {
-          ...this.form.schedule, ...this.form.description,
-          options: {email: this.form.meet.options.email},
+          ...this.form,
           meetingConfig: {
             providerName: 'zoom',
-            email: this.form.meet.options.email
+            email: this.form.options.email
           }
         }
 
