@@ -89,20 +89,16 @@ export default {
             }
           },
           formId: {
-            type: 'crud',
+            type: 'select',
             props: {
-              crudType: 'select',
-              crudData: import('@imagina/qform/_crud/crudForms'),
-              crudProps: {
-                label: `${this.$tr('isite.cms.label.form')}`,
-                clearable: true
-              },
-              config: {
-                options: {
-                  label: 'title', value: 'id'
-                }
-              },
+              label: `${this.$tr('isite.cms.label.form')}`,
+              clearable: true,
+              vIf: config('app.mode') == 'ipanel' ? false : true,
             },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qform.forms',
+              select: {label: 'title', value: 'id'}
+            }
           },
           description: {
             value: '',
