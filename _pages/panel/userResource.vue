@@ -8,7 +8,7 @@
           <page-actions :title="$tr($route.meta.title)" @refresh="init" :extra-actions="extraPageActions"/>
         </div>
         <!--Form-->
-        <dynamic-form v-model="form" v-if="!loading" v-bind="formProps" @submit="saveResource"/>
+        <dynamic-form v-model="form" v-bind="formProps" @submit="saveResource"/>
         <!--Inner loading-->
         <inner-loading :visible="loading"/>
       </div>
