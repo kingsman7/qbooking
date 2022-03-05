@@ -13,6 +13,24 @@
         <inner-loading :visible="loading"/>
       </div>
     </div>
+    <!--Modal to share-->
+    <master-modal v-model="shareModal" custom-position v-if="this.userResource ? true : false"
+                  :title="`${$tr('isite.cms.label.share')} | ${$tr($route.meta.title)}`">
+      <div class="box box-auto-height">
+        <!--Help banner-->
+        <dynamic-field :field="shareOptions.helpField"/>
+        <!--List options to share-->
+        <q-list rounded separator>
+          <q-item clickable v-ripple v-for="(opt, keyOpt) in shareOptions.options" :key="keyOpt"
+                  @click.native="$helper.copyToClipboard(opt.path)" unelevated round>
+            <q-item-section class="text-blue-grey">{{ opt.label }}</q-item-section>
+            <q-item-section avatar>
+              <q-icon name="fas fa-copy" color="info" size="sm"/>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </div>
+    </master-modal>
   </div>
 </template>
 <script>
@@ -29,7 +47,8 @@ export default {
     return {
       loading: false,
       userResource: false,
-      form: {}
+      form: {},
+      shareModal: false
     }
   },
   computed: {
@@ -46,12 +65,7 @@ export default {
           props: {
             icon: 'fas fa-share-alt'
           },
-          action: () => {
-            let baseUrl = this.$store.state.qsiteApp.baseUrl
-            let path = `ibooking/recursos/${this.userResource.id}`
-            //copy to clipboard
-            this.$helper.copyToClipboard(`${baseUrl}/${path}`)
-          }
+          action: () => this.shareModal = true
         }
       ]
     },
@@ -60,7 +74,6 @@ export default {
       return {
         formType: 'grid',
         defaultColClass: 'col-12',
-        //noActions: true,
         blocks: [
           {
             title: this.$tr('isite.cms.label.availability'),
@@ -221,6 +234,36 @@ export default {
 
       //Response
       return configs[configKey]
+    },
+    //Share options
+    shareOptions() {
+      //Instance baseUrl
+      let baseUrl = this.$store.state.qsiteApp.baseUrl
+
+      //Instance options
+      let options = [
+        {
+          label: `${this.$tr('isite.cms.label.share')} ${this.$tr(this.$route.meta.title)}`,
+          path: `${baseUrl}/ibooking/recursos/${this.userResource.id}`
+        }
+      ];
+
+      //Add services options
+      (this.userResource.services || []).forEach(service => {
+        options.push({
+          label: `${this.$tr('isite.cms.label.share')} ${this.$tr('isite.cms.label.service')}: ${service.title}`,
+          path: `${baseUrl}/ipanel/#/booking/reservations/create?resource=${this.userResource.id}&service=${service.id}`
+        })
+      })
+
+      //response
+      return {
+        helpField: {
+          type: 'banner',
+          props: {message: this.$tr('ibooking.cms.helpShareUserResource')}
+        },
+        options: options
+      }
     }
   },
   methods: {
