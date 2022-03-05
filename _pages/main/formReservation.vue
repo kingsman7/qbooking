@@ -2,7 +2,7 @@
   <div id="panelReservationForm">
     <!--No Allow-->
     <div v-if="!allowPublicReservation">
-      <not-found />
+      <not-found/>
     </div>
     <!--Content-->
     <div v-else class="q-container">
@@ -392,22 +392,32 @@ export default {
       this.getData(true)
     },
     //get data
-    getData(refresh = false) {
-      if (this.filterByResource) this.getResourceData(true)
-      else this.getCategories(true)
+    async getData(refresh = false) {
+      this.loading = true
+      await this.getResourceData(true)
+      if (!this.filterByResource) await this.getCategories(true)
+      this.loading = false
     },
     //Get resource data
     getResourceData(refresh = false) {
       return new Promise((resolve, reject) => {
-        this.loading = true
         this.resourceData = false
+        //Instance criteria
+        let criteria = this.filterByResource || this.$store.state.quserAuth.userId
         //Request params
         let requestParams = {
           refresh: refresh,
-          params: {include: 'services.category'}
+          params: {
+            include: 'services.category',
+            filter: {field: this.filterByResource ? 'id' : 'created_by'}
+          }
         }
         //Request
-        this.$crud.show('apiRoutes.qbooking.resources', this.filterByResource, requestParams).then(response => {
+        this.$crud.show('apiRoutes.qbooking.resources', criteria, requestParams).then(response => {
+          if (!response.data) return resolve(null)
+          //Set userId as resourceId
+          this.filterByResource = criteria
+          //Set resource data
           this.resourceData = response.data
           //Set resource selected
           this.selectItem('resourceId', this.filterByResource)
@@ -428,17 +438,14 @@ export default {
           }
 
           resolve(response.data)
-          this.loading = false
         }).catch(error => {
-          reject(error)
-          this.loading = false
+          resolve(error)
         })
       })
     },
     //Get booking categories
     getCategories(refresh = false) {
       return new Promise((resolve, reject) => {
-        this.loading = true
         this.categories = []
         //Request params
         let requestParams = {
@@ -448,11 +455,9 @@ export default {
         //Request
         this.$crud.index('apiRoutes.qbooking.categories', requestParams).then(response => {
           this.categories = response.data
-          this.loading = false
           resolve(response.data)
         }).catch(error => {
-          reject(error)
-          this.loading = false
+          resolve(error)
         })
       })
     },
