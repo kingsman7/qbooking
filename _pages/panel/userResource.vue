@@ -52,6 +52,12 @@ export default {
     }
   },
   computed: {
+    //Settings
+    settings() {
+      return {
+        createExternalMeeting: this.$store.getters['qsiteApp/getSettingValueByName']('ibooking::createExternalMeeting')
+      }
+    },
     //Return user data
     userData() {
       return this.$store.state.quserAuth.userData
@@ -71,7 +77,7 @@ export default {
     },
     //Return user resource form
     formProps() {
-      return {
+      let formprops = {
         formType: 'grid',
         defaultColClass: 'col-12',
         blocks: [
@@ -83,31 +89,6 @@ export default {
                 type: 'schedulable',
                 props: {},
               },
-            }
-          },
-          {
-            title: this.$trp('ibooking.cms.meetingPlatform'),
-            fields: {
-              textInfo: {
-                type: 'banner',
-                props: {
-                  textColor: 'white',
-                  ...this.meetInfoConfig
-                }
-              },
-              email: {
-                value: null,
-                type: 'input',
-                fakeFieldName: 'options',
-                help: {description: this.$tr('ibooking.cms.termsZoom')},
-                props: {
-                  label: `Zoom | ${this.$tr('isite.cms.form.email')}`,
-                  rules: [
-                    val => !!val || this.$tr('isite.cms.message.fieldRequired'),
-                    val => this.$helper.validateEmail(val) || this.$tr('isite.cms.message.fieldEmail')
-                  ],
-                }
-              }
             }
           },
           {
@@ -193,6 +174,37 @@ export default {
           }
         ]
       }
+
+      //Validate if request externalmeet provider
+      if (this.settings.createExternalMeeting)
+        formprops.blocks.push({
+          title: this.$trp('ibooking.cms.meetingPlatform'),
+          fields: {
+            textInfo: {
+              type: 'banner',
+              props: {
+                textColor: 'white',
+                ...this.meetInfoConfig
+              }
+            },
+            email: {
+              value: null,
+              type: 'input',
+              fakeFieldName: 'options',
+              help: {description: this.$tr('ibooking.cms.termsZoom')},
+              props: {
+                label: `Zoom | ${this.$tr('isite.cms.form.email')}`,
+                rules: [
+                  val => !!val || this.$tr('isite.cms.message.fieldRequired'),
+                  val => this.$helper.validateEmail(val) || this.$tr('isite.cms.message.fieldEmail')
+                ],
+              }
+            }
+          }
+        })
+
+      //Response
+      return formprops
     },
     //help banner to meet
     meetInfoConfig() {
