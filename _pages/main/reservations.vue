@@ -2,7 +2,7 @@
   <div id="reservationsPage">
     <!--page actions-->
     <div class="box box-auto-height q-mb-md">
-      <page-actions :title="$tr($route.meta.title)" :extra-actions="extraPageActions" @refresh="getData(true)"
+      <page-actions :title="$route.meta.title" :extra-actions="extraPageActions" @refresh="getData(true)"
                     @new="$router.push({name : 'qbooking.panel.reservations.create'})"/>
     </div>
     <!--Calendar-->

@@ -5,7 +5,7 @@
       <div class="col-12 col-lg-6 offset-lg-3 relative-position ">
         <!--page actions-->
         <div class="box box-auto-height q-mb-md">
-          <page-actions :title="$tr($route.meta.title)" @refresh="init" :extra-actions="extraPageActions"/>
+          <page-actions :title="$route.meta.title" @refresh="init" :extra-actions="extraPageActions"/>
         </div>
         <!--Form-->
         <dynamic-form v-model="form" v-bind="formProps" @submit="saveResource"/>
@@ -15,7 +15,7 @@
     </div>
     <!--Modal to share-->
     <master-modal v-model="shareModal" custom-position v-if="this.userResource ? true : false"
-                  :title="`${$tr('isite.cms.label.share')} | ${$tr($route.meta.title)}`">
+                  :title="`${$tr('isite.cms.label.share')} | ${$route.meta.title}`">
       <div class="box box-auto-height">
         <!--Help banner-->
         <dynamic-field :field="shareOptions.helpField"/>
@@ -255,7 +255,7 @@ export default {
       //Instance options
       let options = [
         {
-          label: `${this.$tr('isite.cms.label.share')} ${this.$tr(this.$route.meta.title)}`,
+          label: `${this.$tr('isite.cms.label.share')} ${this.$route.meta.title}`,
           path: `${baseUrl}/ibooking/recursos/${this.userResource.id}`
         }
       ];
