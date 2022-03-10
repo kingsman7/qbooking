@@ -28,7 +28,7 @@
                  :style="`background-image : url('${resourceData.mediaFiles.mainimage.path}')`"></div>
           </template>
           <div class="ellipsis text-weight-bold">{{ resourceData.title }}</div>
-          <div class="ellipsis-2-lines text-caption">{{ resourceData.description }}</div>
+          <div class="ellipsis-2-lines text-caption" v-html="resourceData.description" />
         </q-banner>
         <!--Separator-->
         <q-separator v-else class="q-mb-sm"/>
