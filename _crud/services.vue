@@ -1,6 +1,13 @@
-<template></template>
+<template>
+  <config-crud ref="configCrud" />
+</template>
 <script>
+import configCrud from "@imagina/qcrud/_config/CrudConfig"
+import bookingJson from "@imagina/qbooking/_crud/services.json"
 export default {
+  components:{
+    configCrud
+  },
   data() {
     return {
       crudId: this.$uid()
@@ -12,7 +19,8 @@ export default {
       let defaultFilters = (config('app.mode') == 'ipanel') ? {createdBy: this.$store.state.quserAuth.userId} : {}
       //Crud data
       return {
-        crudId: this.crudId,
+        ...this.$refs.configCrud.getData(bookingJson,null, defaultFilters),
+        /*crudId: this.crudId,
         entityName: config("main.qbooking.entityNames.services"),
         apiRoute: 'apiRoutes.qbooking.services',
         permission: 'ibooking.services',
@@ -29,9 +37,12 @@ export default {
               align: 'left', field: 'category', sortable: true,
               format: val => ((val && val.title) ? val.title : '-')
             },
-            {name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'left'},
+            {name: 'status', 
+            label: this.$tr('isite.cms.form.status'), 
+            field: 'status', align: 'left'},
             {
-              name: 'shiftTime', label: this.$tr('isite.cms.shiftTime'), field: 'shiftTime', align: 'left',
+              name: 'shiftTime', label: this.$tr('isite.cms.shiftTime'),
+              field: 'shiftTime', align: 'left',
               format: val => val ? `${val} ${this.$trp('isite.cms.label.minute')}` : '-'
             },
             {
@@ -62,7 +73,7 @@ export default {
           title: this.$tr('ibooking.cms.updateService'),
           requestParams: {include: 'categories', filter: {...defaultFilters}}
         },
-        delete: true,
+        delete: true,*/
         formLeft: {
           id: {value: ''},
           userId: {value: this.$store.state.quserAuth.userId},

@@ -1,0 +1,162 @@
+{
+  "crudId": "ibooking-crud-services",
+  "entityName": "service",
+  "apiRoute": "/ibooking/v1/services",
+  "permission": "ibooking.services",
+  "extraFormFields": "ibooking.crud-fields.services",
+  "create": {
+     "title": "ibooking.cms.newService"
+  },
+  "read": {
+    "columns": [
+      {
+        "name": "id",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.id"
+        },
+        "field": "id",
+        "style": "width: 50px"
+      },
+      {
+        "name": "title",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.title"
+        },
+        "field": "title",
+        "align": "rigth"
+      },
+      {
+        "name": "category",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.category"
+        },
+        "field": "category",
+        "align": "left",
+        "sortable": true,
+        "format":{
+          "type":"str",
+          "child":["title"]
+        }
+      },
+      {
+        "name": "status",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.status"
+        },
+        "field": "status",
+        "align": "left"
+      },
+      {
+        "name": "shiftTime",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.shiftTime"
+        },
+        "field": "shiftTime",
+        "align": "left",
+        "format": {
+          "type": "concat",
+          "label": {
+            "isTranslatable": "plural",
+            "value": "isite.cms.label.minute"
+          },
+          "params":"val"
+        }
+      },
+      {
+        "name": "price",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.price"
+        },
+        "field": "price",
+        "align": "left",
+        "format": {
+          "type": "number"
+        }
+      },
+      {
+        "name": "withMeeting",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.label.meeting"
+        },
+        "field": "withMeeting",
+        "align": "left",
+        "format":{
+          "isVal": {
+            "value": "val",
+            "yes":"isite.cms.label.yes",
+            "no":"isite.cms.label.no"
+          }
+        }
+      },
+      {
+        "name": "form",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.label.form"
+        },
+        "field": "form",
+        "align": "left",
+        "format": {
+          "type": "str",
+          "child":["title"]
+        }
+      },
+      {
+        "name": "create_at",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.createdAt"
+        },
+        "field": "createdAt",
+        "align": "left",
+        "format": {
+          "type": "date"
+        }
+      },
+      {
+        "name": "updated_at",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.updatedAt"
+        },
+        "field": "updatedAt",
+        "align": "left",
+        "format": {
+          "type": "date"
+        }
+      },
+      {
+        "name": "actions",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.actions"
+        },
+        "align": "left"
+      }
+    ],
+    "requestParams": {
+       "include": "category",
+       "filter": "custom"
+    }
+  },
+  "update": {
+    "title": {
+      "isTranslatable": {
+        "type": "singular",
+        "value": "ibooking.cms.updateService"
+      }
+    },
+    "requestParams": {
+      "include": "categories",
+      "filter": "custom"
+    }
+  },
+  "delete": true
+}

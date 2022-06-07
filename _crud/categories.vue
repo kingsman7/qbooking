@@ -1,6 +1,13 @@
-<template></template>
+<template>
+  <config-crud ref="configCrud" />
+</template>
 <script>
+import configCrud from "@imagina/qcrud/_config/CrudConfig"
+import bookingJson from "@imagina/qbooking/_crud/categories.json"
 export default {
+  components:{
+    configCrud
+  },
   data() {
     return {
       crudId: this.$uid()
@@ -12,7 +19,8 @@ export default {
       let defaultFilters = (config('app.mode') == 'ipanel') ? {createdBy: this.$store.state.quserAuth.userId} : {}
       //Crud data
       return {
-        crudId: this.crudId,
+        ...this.$refs.configCrud.getData(bookingJson,null, defaultFilters),
+        /*crudId: this.crudId,
         entityName: config("main.qbooking.entityNames.category"),
         apiRoute: 'apiRoutes.qbooking.categories',
         permission: 'ibooking.categories',
@@ -22,22 +30,36 @@ export default {
         },
         read: {
           columns: [
-            {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
-            {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'},
-            {name: 'slug', label: this.$tr('isite.cms.form.slug'), field: 'slug', align: 'left'},
+            {name: 'id', 
+            label: this.$tr('isite.cms.form.id'), 
+            field: 'id', style: 'width: 50px'},
+            {name: 'title', 
+            label: this.$tr('isite.cms.form.title'), 
+            field: 'title', align: 'rigth'},
+            {name: 'slug', 
+            label: this.$tr('isite.cms.form.slug'), 
+            field: 'slug', align: 'left'},
             {
-              name: 'parent', label: this.$tr('isite.cms.form.parent'), field: 'parent', align: 'left',
+              name: 'parent', 
+              label: this.$tr('isite.cms.form.parent'), 
+              field: 'parent', align: 'left',
               format: val => val ? (val.title ? val.title : '-') : '-'
             },
             {
-              name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
+              name: 'created_at', 
+              label: this.$tr('isite.cms.form.createdAt'), 
+              field: 'createdAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
             {
-              name: 'updated_at', label: this.$tr('isite.cms.form.updatedAt'), field: 'updatedAt', align: 'left',
+              name: 'updated_at', 
+              label: this.$tr('isite.cms.form.updatedAt'), 
+              field: 'updatedAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
-            {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
+            {name: 'actions', 
+            label: this.$tr('isite.cms.form.actions'), 
+            align: 'left'},
           ],
           requestParams: {include: 'parent', filter: {...defaultFilters}}
         },
@@ -45,7 +67,7 @@ export default {
           title: this.$tr('ibooking.cms.updateCategory'),
           requestParams: {include: 'parent', filter: {...defaultFilters}}
         },
-        delete: true,
+        delete: true,*/
         formLeft: {
           id: {value: ''},
           userId: {value: this.$store.state.quserAuth.userId},

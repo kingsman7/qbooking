@@ -1,25 +1,33 @@
 <template>
-  <master-modal v-model="modal.show" @hide="resetModal()" :loading="modal.loading"
-                :title="modal.title" custom-position>
-    <div class="box">
-      <q-list separator dense>
-        <q-item v-for="(item, itemKey) in modal.requestData" :key="itemKey" style="padding: 8px 0">
-          <q-item-section>
-            <q-item-label v-if="item.fieldType != 'media'">{{ item.label }}</q-item-label>
-            <!--File preview-->
-            <q-item-label v-if="item.fieldType == 'media'">
-              <file-list v-model="item.value" grid-col-class="col-12" hide-header/>
-            </q-item-label>
-            <!--value-->
-            <q-item-label v-else caption>{{ item.value }}</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </div>
-  </master-modal>
+  <div>
+      <master-modal v-model="modal.show" @hide="resetModal()" :loading="modal.loading"
+                    :title="modal.title" custom-position>
+        <div class="box">
+          <q-list separator dense>
+            <q-item v-for="(item, itemKey) in modal.requestData" :key="itemKey" style="padding: 8px 0">
+              <q-item-section>
+                <q-item-label v-if="item.fieldType != 'media'">{{ item.label }}</q-item-label>
+                <!--File preview-->
+                <q-item-label v-if="item.fieldType == 'media'">
+                  <file-list v-model="item.value" grid-col-class="col-12" hide-header/>
+                </q-item-label>
+                <!--value-->
+                <q-item-label v-else caption>{{ item.value }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+      </master-modal>
+      <config-crud ref="configCrud" />
+  </div>
 </template>
 <script>
+import configCrud from "@imagina/qcrud/_config/CrudConfig"
+import bookingJson from "@imagina/qbooking/_crud/reservations.json"
 export default {
+  components:{
+    configCrud
+  },
   data() {
     return {
       crudId: this.$uid(),
@@ -33,8 +41,10 @@ export default {
   },
   computed: {
     crudData() {
+      let defaultFilters = (config('app.mode') == 'ipanel') ? {createdBy: this.$store.state.quserAuth.userId} : {}
       return {
-        crudId: this.crudId,
+        ...this.$refs.configCrud.getData(bookingJson,null, defaultFilters),
+        /*crudId: this.crudId,
         entityName: config("main.qbooking.entityNames.reservation"),
         apiRoute: 'apiRoutes.qbooking.reservationItems',
         permission: 'ibooking.reservations',
@@ -106,7 +116,7 @@ export default {
         update: {
           title: this.$tr('ibooking.cms.updateReservation')
         },
-        delete: true,
+        delete: true,*/
         formLeft: {
           id: {value: ''},
           categoryId: {

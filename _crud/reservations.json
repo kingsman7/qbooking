@@ -1,0 +1,165 @@
+{
+  "crudId": "ibooking-crud-reservations",
+  "entityName": "reservations",
+  "apiRoute": "/ibooking/v1/reservations",
+  "permission": "ibooking.reservations",
+  "extraFormFields": "ibooking.crud-fields.reservations",
+  "create": {
+     "title": "ibooking.cms.newCategory"
+  },
+  "read": {
+    "columns": [
+      {
+        "name": "id",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.id"
+        },
+        "field": "id",
+        "style": "width: 50px"
+      },
+      {
+        "name": "service",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.label.service"
+        },
+        "field": "",
+        "align": "rigth",
+        "format":{
+          "type":"concat",
+          "params":"row",
+          "child": ["categoryTitle", "categoryTitle"]
+        }
+      },
+      {
+        "name": "statusName",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.status"
+        },
+        "field": "statusName",
+        "align": "left"
+      },
+      {
+        "name": "startDate",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.createdAt"
+        },
+        "field": "createdAt",
+        "align": "left",
+        "format": {
+          "type": "date"
+        }
+      },
+      {
+        "name": "customer",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.label.customer"
+        },
+        "field": "",
+        "align": "left",
+        "format":{
+          "type":"conditional",
+          "isVal": {
+            "value": "!row.reservation || !row.reservation.customer",
+            "yes":"-",
+            "no":"`${row.reservation.customer.firstName} ${row.reservation.customer.lastName}`",
+            "params":"row"
+          }
+        }
+      },
+      {
+        "name": "create_at",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.createdAt"
+        },
+        "field": "createdAt",
+        "align": "left",
+        "format": {
+          "type": "date"
+        }
+      },
+      {
+        "name": "updated_at",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.updatedAt"
+        },
+        "field": "updatedAt",
+        "align": "left",
+        "format": {
+          "type": "date"
+        }
+      },
+      {
+        "name": "actions",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.actions"
+        },
+        "align": "left"
+      }
+    ],
+    "requestParams": {
+       "include": "reservation.customer,meetings,service,fields"
+    },
+    "grid": {
+      "component": "@imagina/qbooking/_components/crud/reservationCard"
+    },
+    "actions": [
+      {
+        "name":"viewLead",
+        "icon":"fas fa-info-circle",
+        "color":"info",
+        "tooltip":"isite.cms.label.information",
+        "format":{
+          "type": "str",
+          "child": ["service"],
+          "firtsLevel":["form"],
+          "else": {
+            "vIf": false
+          }
+        },
+        "action": {
+          "type":"method"
+        }
+      }
+    ],
+    "filters": [
+      {
+        "filterName": "userId",
+        "value": null,
+        "type": "select",
+        "props": {
+          "label": {
+            "isTranslatable": {
+              "type": "singular",
+              "value": "isite.cms.label.user"
+            }
+          }
+        },
+        "loadOptions": {
+          "apiRoute": "/profile/v1/users",
+          "select": {"label": "fullName", "id": "id"}
+        }
+      }
+    ]
+  },
+  "update": {
+    "title": {
+      "isTranslatable": {
+        "type": "singular",
+        "value": "ibooking.cms.updateReservation"
+      }
+    },
+    "requestParams": {
+      "include": "parent",
+       "filter": "customParams"
+   }
+  },
+  "delete": true
+}

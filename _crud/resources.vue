@@ -1,6 +1,13 @@
-<template></template>
+<template>
+  <config-crud ref="configCrud" />
+</template>
 <script>
+import configCrud from "@imagina/qcrud/_config/CrudConfig"
+import bookingJson from "@imagina/qbooking/_crud/resources.json"
 export default {
+  components:{
+    configCrud
+  },
   data() {
     return {
       crudId: this.$uid()
@@ -9,7 +16,8 @@ export default {
   computed: {
     crudData() {
       return {
-        crudId: this.crudId,
+        ...this.$refs.configCrud.getData(bookingJson),
+        /*crudId: this.crudId,
         entityName: config("main.qbooking.entityNames.resource"),
         apiRoute: 'apiRoutes.qbooking.resources',
         permission: 'ibooking.resources',
@@ -44,7 +52,7 @@ export default {
           title: this.$tr('ibooking.cms.updateResource'),
           requestParams: {include: 'services,schedule.workTimes'}
         },
-        delete: true,
+        delete: true,*/
         formLeft: {
           id: {value: ''},
           userId: {value: this.$store.state.quserAuth.userId},

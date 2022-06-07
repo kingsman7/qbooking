@@ -1,0 +1,116 @@
+{
+  "crudId": "ibooking-crud-resources",
+  "entityName": "resource",
+  "apiRoute": "/ibooking/v1/resources",
+  "permission": "ibooking.resources",
+  "extraFormFields": "ibooking.crud-fields.resources",
+  "create": {
+     "title": "ibooking.cms.newResource"
+  },
+  "read": {
+    "columns": [
+      {
+        "name": "id",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.id"
+        },
+        "field": "id",
+        "style": "width: 50px"
+      },
+      {
+        "name": "title",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.title"
+        },
+        "field": "title",
+        "align": "rigth"
+      },
+      {
+        "name": "slug",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.slug"
+        },
+        "field": "slug",
+        "align": "left"
+      },
+      {
+        "name": "status",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.status"
+        },
+        "field": "status",
+        "align": "left"
+      },
+      {
+        "name": "services",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.label.service"
+        },
+        "field": "services",
+        "align": "left",
+        "classes":"ellipsis",
+        "style":"max-width: 250px",
+        "format": {
+          "type": "array",
+          "method":["map","join"],
+          "child":["title"],
+          "join":", "
+
+        }
+      },
+      {
+        "name": "create_at",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.createdAt"
+        },
+        "field": "createdAt",
+        "align": "left",
+        "format": {
+          "type": "date"
+        }
+      },
+      {
+        "name": "updated_at",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.updatedAt"
+        },
+        "field": "updatedAt",
+        "align": "left",
+        "format": {
+          "type": "date"
+        }
+      },
+      {
+        "name": "actions",
+        "label": {
+          "isTranslatable": "singular",
+          "value": "isite.cms.form.actions"
+        },
+        "align": "left"
+      }
+    ],
+    "requestParams": {
+       "include": "services"
+    }
+  },
+  "update": {
+    "title": {
+      "isTranslatable": {
+        "type": "singular",
+        "value": "ibooking.cms.updateResource"
+      }
+    },
+    
+    "requestParams": {
+      "include": "services,schedule.workTimes"
+   }
+  },
+  "delete": true
+}
